@@ -20,7 +20,7 @@ DEFENSA_ORAL_HTML = """
     b { color: #f8fafc; }
 </style>
 
-<h2>🎓 Guía de Defensa Oral y Control Anti-IA — Criptoanálisis de Vigenère</h2>
+<h2>Guía de Fundamentos Teóricos — Criptoanálisis de Vigenère</h2>
 
 <div class="card">
     <span class="tag">CRITERIO DE DEFENSA 15 PTS</span>

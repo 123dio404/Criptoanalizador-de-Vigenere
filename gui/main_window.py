@@ -70,11 +70,11 @@ class MainWindow(QMainWindow):
         self.tab_frecuencias = TabFrecuencias()
         self.tab_descifrado = TabDescifrado()
 
-        self.tabs.addTab(self.tab_cifrador, "1. 📥 Interceptor / Cifrador")
-        self.tabs.addTab(self.tab_kasiski, "2. 🔍 Test de Kasiski")
-        self.tabs.addTab(self.tab_friedman, "3. 📊 Índice de Coincidencia")
-        self.tabs.addTab(self.tab_frecuencias, "4. 🔑 Análisis de Frecuencias (χ²)")
-        self.tabs.addTab(self.tab_descifrado, "5. 📜 Descifrado y Trazabilidad")
+        self.tabs.addTab(self.tab_cifrador, "1. Interceptor / Cifrador")
+        self.tabs.addTab(self.tab_kasiski, "2. Test de Kasiski")
+        self.tabs.addTab(self.tab_friedman, "3. Índice de Coincidencia")
+        self.tabs.addTab(self.tab_frecuencias, "4. Análisis de Frecuencias (χ²)")
+        self.tabs.addTab(self.tab_descifrado, "5. Descifrado y Trazabilidad")
 
         main_layout.addWidget(self.tabs)
 

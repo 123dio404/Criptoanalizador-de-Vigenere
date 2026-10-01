@@ -8,6 +8,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt
 from gui.main_window import MainWindow
+from gui.styles import MAIN_STYLESHEET
 
 
 def main():
@@ -20,6 +21,7 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("Criptoanalizador de Vigenère")
     app.setOrganizationName("UAGRM")
+    app.setStyleSheet(MAIN_STYLESHEET)
 
     window = MainWindow()
     window.show()

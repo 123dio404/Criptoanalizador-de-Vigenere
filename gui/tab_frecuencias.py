@@ -38,7 +38,7 @@ class TabFrecuencias(QWidget):
         self.spin_key_len.setValue(3)
         self.spin_key_len.valueChanged.connect(self.recalcular_clave)
 
-        btn_recalc = QPushButton("🔄 Recalcular Clave para esta Longitud")
+        btn_recalc = QPushButton("Recalcular Clave para esta Longitud")
         btn_recalc.setObjectName("secondaryButton")
         btn_recalc.clicked.connect(self.recalcular_clave)
 
@@ -57,7 +57,7 @@ class TabFrecuencias(QWidget):
             "font-size: 26px; font-weight: bold; color: #38bdf8; letter-spacing: 4px; padding: 4px;"
         )
         
-        self.btn_usar_clave = QPushButton("🔑 Confirmar y Descifrar Texto Completo")
+        self.btn_usar_clave = QPushButton("Confirmar y Descifrar Texto Completo")
         self.btn_usar_clave.setObjectName("accentButton")
         self.btn_usar_clave.clicked.connect(self.confirmar_clave)
 

@@ -128,7 +128,7 @@ class TabKasiski(QWidget):
             bar_len = int((votes / max_votes) * 25)
             bar_visual = "█" * bar_len + f" ({votes})"
             
-            eval_text = "★ CANDIDATO PRINCIPAL" if row == 0 else ("Candidato Secundario / Múltiplo" if row < 3 else "Baja probabilidad")
+            eval_text = "CANDIDATO PRINCIPAL" if row == 0 else ("Candidato Secundario / Múltiplo" if row < 3 else "Baja probabilidad")
 
             it_factor = QTableWidgetItem(f"m = {factor}")
             it_votes = QTableWidgetItem(str(votes))

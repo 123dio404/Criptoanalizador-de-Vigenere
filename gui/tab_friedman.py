@@ -108,7 +108,7 @@ class TabFriedman(QWidget):
             is_peak = (k == best_period) or (avg_ic >= 0.065)
             if is_peak:
                 if k == best_period:
-                    diag = "★ PICO MÁXIMO (Longitud de Clave Recomendada)"
+                    diag = "PICO MÁXIMO (Longitud de Clave Recomendada)"
                 else:
                     diag = "Pico Secundario (Múltiplo de la Clave)"
             else:

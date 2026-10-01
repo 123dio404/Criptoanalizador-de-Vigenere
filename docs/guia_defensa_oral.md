@@ -63,8 +63,8 @@ Este documento te prepara para defender tu proyecto con total solvencia ante el 
    ```bash
    python3 main.py
    ```
-2. En la pestaña 1, haz clic en **"⚡ Cargar Caso de Prueba Docente"**.
-3. Haz clic en **"🚀 Enviar Criptograma a Análisis Completo"**.
+2. En la pestaña 1, haz clic en **"Cargar Caso de Prueba"**.
+3. Haz clic en **"Enviar Criptograma a Análisis Completo"**.
 4. La ventana saltará automáticamente a la **Pestaña 2 (Kasiski)**:
    - Señala al docente la tabla de trigramas repetidos (`NUA`, `GDO`, `DOW`, etc.) y muéstrale que las distancias (27, 57, 105, 132) son todas múltiplos de 3.
    - Señala el histograma de factores donde el factor 3 tiene **72 votos**.

@@ -41,7 +41,7 @@ class TabCifrador(QWidget):
         top_layout = QHBoxLayout(top_box)
         
         lbl_info = QLabel("Carga rápida de texto de prueba:")
-        btn_prueba = QPushButton("⚡ Cargar Caso de Prueba ('SOLAOSERPROFUNDO...' + 'MAR')")
+        btn_prueba = QPushButton("Cargar Caso de Prueba ('SOLAOSERPROFUNDO...' + 'MAR')")
         btn_prueba.setObjectName("accentButton")
         btn_prueba.clicked.connect(self.cargar_caso_prueba)
         
@@ -76,12 +76,12 @@ class TabCifrador(QWidget):
 
         # Botones de Cifrado
         btn_layout = QHBoxLayout()
-        self.btn_encrypt = QPushButton("🔒 Cifrar Texto con Clave")
+        self.btn_encrypt = QPushButton("Cifrar Texto con Clave")
         self.btn_encrypt.clicked.connect(self.cifrar_texto)
-        self.btn_decrypt = QPushButton("🔓 Descifrar con Clave Indicada")
+        self.btn_decrypt = QPushButton("Descifrar con Clave Indicada")
         self.btn_decrypt.setObjectName("secondaryButton")
         self.btn_decrypt.clicked.connect(self.descifrar_con_clave)
-        self.btn_clear = QPushButton("🗑 Limpiar Campos")
+        self.btn_clear = QPushButton("Limpiar Campos")
         self.btn_clear.setObjectName("secondaryButton")
         self.btn_clear.clicked.connect(self.limpiar)
         
@@ -104,7 +104,7 @@ class TabCifrador(QWidget):
         self.lbl_stats = QLabel("Longitud del criptograma: 0 caracteres.")
         self.lbl_stats.setObjectName("badgeLabel")
         
-        self.btn_analizar = QPushButton("🚀 Enviar Criptograma a Análisis Completo (Kasiski + IC + Chi²)")
+        self.btn_analizar = QPushButton("Enviar Criptograma a Análisis Completo (Kasiski + IC + Chi²)")
         self.btn_analizar.clicked.connect(self.enviar_a_analisis)
         
         action_layout.addWidget(self.lbl_stats)

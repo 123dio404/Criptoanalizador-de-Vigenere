@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 Descripción del Proyecto
+## Descripción del Proyecto
 
 Aplicación académica y profesional desarrollada en **Python** con interfaz gráfica en **PyQt5** para interceptar, analizar y quebrar criptogramas generados mediante el cifrado polialfabético de Vigenère.
 
@@ -17,7 +17,7 @@ El sistema implementa de forma nativa (en código propio y sin librerías extern
 
 ---
 
-## 🚀 Requisitos y Ejecución
+## Requisitos y Ejecución
 
 ### Requisitos:
 - **Python 3.10+** (Probado en Python 3.12)
@@ -35,7 +35,7 @@ python3 -m unittest tests/test_caso_docente.py -v
 
 ---
 
-## 🎯 Validación del Caso de Prueba Oficial (Grupo C)
+## Validación del Caso de Prueba Oficial (Grupo C)
 
 * **Texto Claro:** `"SOLA O SER PROFUNDO EN EL SILENCIO DE LA NOCHE..."`
 * **Clave de Prueba:** `"MAR"` (longitud $m = 3$)
@@ -49,11 +49,11 @@ python3 -m unittest tests/test_caso_docente.py -v
 
 ---
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 criptoanalizador/
-├── core/                     # LÓGICA MATEMÁTICA PURA (Sin librerías prohibidas)
+├── core/                     # LÓGICA MATEMÁTICA PURA (Sin librerías externas)
 │   ├── __init__.py
 │   ├── vigenere.py          # Cifrado/Descifrado Vigenère y normalización
 │   ├── kasiski.py           # Detección de trigramas, cálculo de distancias y divisores
@@ -66,12 +66,11 @@ criptoanalizador/
 ├── gui/                      # INTERFAZ GRÁFICA MODERNA (PyQt5)
 │   ├── __init__.py
 │   ├── styles.py            # Hoja de estilos (Tema Slate / Dark)
-│   ├── tab_cifrador.py      # Cifrado, descifrado y carga rápida del caso docente
+│   ├── tab_cifrador.py      # Cifrado, descifrado y carga rápida de prueba
 │   ├── tab_kasiski.py       # Visualización de trigramas, distancias y factores
 │   ├── tab_friedman.py      # Gráficas y tablas de periodos vs IC
 │   ├── tab_frecuencias.py   # Deducción interactiva de cada letra de la clave
 │   ├── tab_descifrado.py    # Descifrado final y exportador de trazas
-│   ├── tab_defensa.py       # Guía didáctica y preguntas de defensa oral (Anti-IA)
 │   └── main_window.py       # Ventana principal integradora
 ├── tests/
 │   ├── __init__.py
@@ -85,7 +84,7 @@ criptoanalizador/
 
 ---
 
-## 📊 Fundamentos Matemáticos para la Defensa Oral (Control Anti-IA)
+## Fundamentos Matemáticos
 
 ### 1. Test de Kasiski
 $$\Delta = pos_2 - pos_1 = k \cdot m \implies m \mid \Delta$$

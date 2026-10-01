@@ -71,11 +71,11 @@ class TabDescifrado(QWidget):
         trace_layout.addWidget(self.txt_trace)
 
         btn_bar = QHBoxLayout()
-        self.btn_copiar_traza = QPushButton("📋 Copiar Traza para Informe Académico")
+        self.btn_copiar_traza = QPushButton("Copiar Traza al Portapapeles")
         self.btn_copiar_traza.setObjectName("secondaryButton")
         self.btn_copiar_traza.clicked.connect(self.copiar_traza)
 
-        self.btn_exportar_traza = QPushButton("💾 Guardar Traza en Archivo (.txt / .md)")
+        self.btn_exportar_traza = QPushButton("Guardar Traza en Archivo (.txt / .md)")
         self.btn_exportar_traza.setObjectName("secondaryButton")
         self.btn_exportar_traza.clicked.connect(self.exportar_traza)
 

@@ -214,4 +214,33 @@ QComboBox QAbstractItemView {
     border: 1px solid #334155;
     selection-background-color: #2563eb;
 }
+
+/* Diálogos y Cuadros de Mensaje / Alerta (QMessageBox / QDialog) */
+QDialog, QMessageBox {
+    background-color: #1e293b;
+    color: #f8fafc;
+}
+
+QMessageBox QLabel, QDialog QLabel {
+    color: #f1f5f9;
+    background-color: transparent;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+QMessageBox QPushButton, QDialog QPushButton {
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 20px;
+    min-width: 80px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+QMessageBox QPushButton:hover, QDialog QPushButton:hover {
+    background-color: #1d4ed8;
+}
 """
+
