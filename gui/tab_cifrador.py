@@ -1,7 +1,7 @@
 """
 gui/tab_cifrador.py
 Pestaña de Cifrado, Descifrado y Carga de Criptogramas para Pruebas.
-Permite simular escenarios y cargar directamente el caso de prueba docente.
+Permite cifrar, descifrar y cargar textos de prueba para el análisis.
 """
 
 from PyQt5.QtWidgets import (
@@ -11,13 +11,17 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import pyqtSignal
 from core.vigenere import cifrar_vigenere, descifrar_vigenere, normalizar_texto
 
-CASO_DOCENTE_TEXTO = (
+TEXTO_CASO_PRUEBA = (
     "SOLA O SER PROFUNDO EN EL SILENCIO DE LA NOCHE CUANDO LA LUNA ILUMINA EL CAMINO. "
     "SOLA O SER PROFUNDO EN EL MAR AZUL Y TRANSPARENTE DONDE LOS PECES NADAN EN PAZ. "
     "EL RIO ES CLARO Y PROFUNDO, EL VIENTO SUSURRA HISTORIAS ANTIGUAS EN EL VALLE. "
     "SOLA O SER PROFUNDO EN EL PENSAMIENTO DEL HOMBRE QUE BUSCA LA VERDAD Y LA SABIDURIA."
 )
-CASO_DOCENTE_CLAVE = "MAR"
+CLAVE_CASO_PRUEBA = "MAR"
+
+# Alias de compatibilidad
+CASO_DOCENTE_TEXTO = TEXTO_CASO_PRUEBA
+CASO_DOCENTE_CLAVE = CLAVE_CASO_PRUEBA
 
 
 class TabCifrador(QWidget):
@@ -36,13 +40,13 @@ class TabCifrador(QWidget):
         top_box = QGroupBox("Opciones Rápidas de Prueba")
         top_layout = QHBoxLayout(top_box)
         
-        lbl_info = QLabel("Carga rápida de escenarios de evaluación:")
-        btn_docente = QPushButton("⚡ Cargar Caso de Prueba Docente ('SOLAOSERPROFUNDO...' + 'MAR')")
-        btn_docente.setObjectName("accentButton")
-        btn_docente.clicked.connect(self.cargar_caso_docente)
+        lbl_info = QLabel("Carga rápida de texto de prueba:")
+        btn_prueba = QPushButton("⚡ Cargar Caso de Prueba ('SOLAOSERPROFUNDO...' + 'MAR')")
+        btn_prueba.setObjectName("accentButton")
+        btn_prueba.clicked.connect(self.cargar_caso_prueba)
         
         top_layout.addWidget(lbl_info)
-        top_layout.addWidget(btn_docente)
+        top_layout.addWidget(btn_prueba)
         top_layout.addStretch()
         layout.addWidget(top_box)
 
@@ -113,10 +117,13 @@ class TabCifrador(QWidget):
         # Conectar cambio de texto en criptograma para actualizar contador
         self.txt_cipher.textChanged.connect(self.actualizar_contador)
 
-    def cargar_caso_docente(self):
-        self.txt_plain.setText(CASO_DOCENTE_TEXTO)
-        self.input_key.setText(CASO_DOCENTE_CLAVE)
+    def cargar_caso_prueba(self):
+        self.txt_plain.setText(TEXTO_CASO_PRUEBA)
+        self.input_key.setText(CLAVE_CASO_PRUEBA)
         self.cifrar_texto()
+
+    # Alias de compatibilidad
+    cargar_caso_docente = cargar_caso_prueba
 
     def cifrar_texto(self):
         plain = self.txt_plain.toPlainText().strip()

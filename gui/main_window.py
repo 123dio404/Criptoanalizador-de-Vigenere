@@ -16,7 +16,6 @@ from gui.tab_kasiski import TabKasiski
 from gui.tab_friedman import TabFriedman
 from gui.tab_frecuencias import TabFrecuencias
 from gui.tab_descifrado import TabDescifrado
-from gui.tab_defensa import TabDefensa
 from core.analyzer import CriptoanalizadorVigenere
 
 
@@ -70,21 +69,19 @@ class MainWindow(QMainWindow):
         self.tab_friedman = TabFriedman()
         self.tab_frecuencias = TabFrecuencias()
         self.tab_descifrado = TabDescifrado()
-        self.tab_defensa = TabDefensa()
 
         self.tabs.addTab(self.tab_cifrador, "1. 📥 Interceptor / Cifrador")
         self.tabs.addTab(self.tab_kasiski, "2. 🔍 Test de Kasiski")
         self.tabs.addTab(self.tab_friedman, "3. 📊 Índice de Coincidencia")
         self.tabs.addTab(self.tab_frecuencias, "4. 🔑 Análisis de Frecuencias (χ²)")
         self.tabs.addTab(self.tab_descifrado, "5. 📜 Descifrado y Trazabilidad")
-        self.tabs.addTab(self.tab_defensa, "6. 🎓 Guía Defensa Oral (Anti-IA)")
 
         main_layout.addWidget(self.tabs)
 
         # Barra de estado
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
-        self.status_bar.showMessage("Listo para iniciar. Puede cargar el caso de prueba docente en la pestaña 1.")
+        self.status_bar.showMessage("Listo para iniciar. Puede ingresar un criptograma o cargar el caso de prueba en la pestaña 1.")
 
         # Conectar señales
         self.tab_cifrador.criptograma_listo.connect(self.procesar_criptograma)

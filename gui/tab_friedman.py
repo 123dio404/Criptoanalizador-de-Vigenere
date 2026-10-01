@@ -46,7 +46,7 @@ class TabFriedman(QWidget):
         layout.addWidget(ref_box)
 
         # Explicación teórica
-        theory_box = QGroupBox("Fundamento Criptográfico: Índice de Coincidencia (Defensa Oral)")
+        theory_box = QGroupBox("Fundamento Teórico: Índice de Coincidencia")
         theory_layout = QVBoxLayout(theory_box)
         theory_text = QLabel(
             "Fórmula de William F. Friedman (1922): IC = Σ [f_i * (f_i - 1)] / [N * (N - 1)].\n"

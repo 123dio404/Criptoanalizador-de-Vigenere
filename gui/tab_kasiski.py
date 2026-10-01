@@ -37,8 +37,8 @@ class TabKasiski(QWidget):
         metrics_layout.addStretch()
         layout.addWidget(metrics_box)
 
-        # Explicación teórica para la defensa oral
-        theory_box = QGroupBox("Fundamento Criptográfico (Defensa Oral)")
+        # Fundamento teórico
+        theory_box = QGroupBox("Fundamento Criptográfico")
         theory_layout = QVBoxLayout(theory_box)
         theory_text = QLabel(
             "Principio de Kasiski: Cuando secuencias idénticas de texto claro se cifran con la misma fase de la clave, "

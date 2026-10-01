@@ -1,8 +1,7 @@
 """
 main.py
-Punto de Entrada del Criptoanalizador de Vigenère.
-Asignatura: ELC107 Criptografía y Seguridad - UAGRM.
-Grupo C: Criptoanálisis de Vigenère con Kasiski, Friedman y Chi-cuadrado.
+Punto de entrada del Criptoanalizador de Vigenère.
+Análisis estadístico mediante Test de Kasiski, Test de Friedman y Chi-Cuadrado (χ²).
 """
 
 import sys
@@ -19,7 +18,7 @@ def main():
         QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
     app = QApplication(sys.argv)
-    app.setApplicationName("Criptoanalizador de Vigenere - ELC107 Grupo C")
+    app.setApplicationName("Criptoanalizador de Vigenère")
     app.setOrganizationName("UAGRM")
 
     window = MainWindow()
