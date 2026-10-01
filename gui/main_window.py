@@ -17,13 +17,13 @@ from gui.tab_friedman import TabFriedman
 from gui.tab_frecuencias import TabFrecuencias
 from gui.tab_descifrado import TabDescifrado
 from gui.tab_defensa import TabDefensa
-from core.analyzer import VigenereCryptanalyzer
+from core.analyzer import CriptoanalizadorVigenere
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.analyzer = VigenereCryptanalyzer()
+        self.analyzer = CriptoanalizadorVigenere()
         self.init_ui()
 
     def init_ui(self):
@@ -94,8 +94,8 @@ class MainWindow(QMainWindow):
         """Ejecuta el pipeline completo de criptoanálisis sobre el texto cifrado."""
         try:
             self.status_bar.showMessage("Ejecutando criptoanálisis estadístico...")
-            self.analyzer.set_ciphertext(ciphertext)
-            results = self.analyzer.run_full_analysis()
+            self.analyzer.cargar_criptograma(ciphertext)
+            results = self.analyzer.ejecutar_analisis_completo()
 
             m = results['determined_key_length']
             key = results['recovered_key']
@@ -141,7 +141,7 @@ class MainWindow(QMainWindow):
     def aplicar_clave_manual(self, custom_key: str):
         """Descifra el criptograma con una clave confirmada o editada por el usuario."""
         try:
-            decrypted = self.analyzer.decrypt_message(custom_key)
+            decrypted = self.analyzer.descifrar_mensaje(custom_key)
             self.badge_key.setText(f"Clave: '{custom_key}'")
             self.badge_m.setText(f"Longitud m: {len(custom_key)}")
 

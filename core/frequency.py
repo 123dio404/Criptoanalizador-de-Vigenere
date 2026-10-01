@@ -23,104 +23,117 @@ Se comparan con las frecuencias esperadas del español E_i = N * P_esp(i) median
 
 from collections import Counter
 from typing import Dict, List, Tuple, Any
-from data.spanish_freq import ALPHABET_26, SPANISH_PROBABILITIES_26
-from core.friedman import split_into_cosets
-from core.vigenere import CHAR_TO_INDEX, INDEX_TO_CHAR
+from data.spanish_freq import ALFABETO_ESP_26, PROBABILIDADES_ESP
+from core.friedman import particionar_en_subtextos
+from core.vigenere import LETRA_A_INDICE, INDICE_A_LETRA
 
 
-def score_shift_chi_squared(coset: str, shift: int) -> Tuple[float, float]:
+def calcular_discrepancia_chi_cuadrado(subtexto: str, desplazamiento: int) -> Tuple[float, float]:
     """
-    Calcula el puntaje Chi-cuadrado y la correlación al descifrar 'coset' con el desplazamiento 'shift' (0 a 25).
+    Calcula el estadístico Chi-cuadrado (χ²) y la correlación fonética al descifrar
+    'subtexto' con un desplazamiento propuesto (0 a 25 correspondiente a A-Z).
     
+    Fórmulas:
+        χ²(s) = sum((O_i - E_i)² / E_i)
+        Corr(s) = sum((O_i / N) * P_esp(i))
+        
     Retorna:
-        (chi_squared, correlation)
+        (chi_cuadrado, correlacion)
     """
-    n = len(coset)
+    n = len(subtexto)
     if n == 0:
         return float('inf'), 0.0
     
-    # Descifrar coset con el desplazamiento candidato shift
-    # p = (c - shift) mod 26
-    decrypted_counts = Counter()
-    for ch in coset:
-        c_val = CHAR_TO_INDEX[ch]
-        p_val = (c_val - shift) % 26
-        decrypted_counts[INDEX_TO_CHAR[p_val]] += 1
+    # Descifrar subtexto César con el desplazamiento candidato
+    # p = (c - desplazamiento) mod 26
+    conteos_descifrado = Counter()
+    for ch in subtexto:
+        c_val = LETRA_A_INDICE[ch]
+        p_val = (c_val - desplazamiento) % 26
+        conteos_descifrado[INDICE_A_LETRA[p_val]] += 1
         
     chi2 = 0.0
-    correlation = 0.0
+    correlacion = 0.0
     
-    for letter in ALPHABET_26:
-        observed = decrypted_counts.get(letter, 0)
-        expected_prob = SPANISH_PROBABILITIES_26[letter]
-        expected = n * expected_prob
+    for letra in ALFABETO_ESP_26:
+        observado = conteos_descifrado.get(letra, 0)
+        prob_esperada = PROBABILIDADES_ESP[letra]
+        esperado = n * prob_esperada
         
-        # Chi-cuadrado
-        if expected > 0:
-            diff = observed - expected
-            chi2 += (diff * diff) / expected
+        # Estadístico Chi-cuadrado
+        if esperado > 0:
+            diff = observado - esperado
+            chi2 += (diff * diff) / esperado
             
-        # Correlación
-        correlation += (observed / n) * expected_prob
+        # Coeficiente de correlación
+        correlacion += (observado / n) * prob_esperada
         
-    return chi2, correlation
+    return chi2, correlacion
 
 
-def solve_key_for_column(coset: str) -> List[Dict[str, Any]]:
+def resolver_clave_para_columna(subtexto: str) -> List[Dict[str, Any]]:
     """
-    Prueba las 26 posibles letras de clave para una columna y retorna una lista ordenada
-    desde la más probable (menor chi2 y mayor correlación) hasta la menos probable.
+    Prueba las 26 posibles letras del alfabeto para una columna (subtexto monoalfabético César)
+    y retorna la lista ordenada desde la más probable (menor χ² y mayor correlación)
+    hasta la menos probable.
     """
-    results = []
+    resultados = []
     
-    for shift in range(26):
-        letter = INDEX_TO_CHAR[shift]
-        chi2, corr = score_shift_chi_squared(coset, shift)
-        results.append({
-            'shift': shift,
-            'letter': letter,
+    for desplazamiento in range(26):
+        letra = INDICE_A_LETRA[desplazamiento]
+        chi2, corr = calcular_discrepancia_chi_cuadrado(subtexto, desplazamiento)
+        resultados.append({
+            'shift': desplazamiento,
+            'letter': letra,
             'chi2': round(chi2, 2),
             'correlation': round(corr, 4)
         })
         
     # Ordenar principalmente por menor Chi-cuadrado y secundariamente por mayor correlación
-    results.sort(key=lambda x: (x['chi2'], -x['correlation']))
-    return results
+    resultados.sort(key=lambda x: (x['chi2'], -x['correlation']))
+    return resultados
 
 
-def recover_vigenere_key(ciphertext: str, key_length: int) -> Dict[str, Any]:
+def deducir_clave_por_frecuencias(criptograma: str, longitud_clave: int) -> Dict[str, Any]:
     """
-    Recupera la clave más probable para una longitud dada 'key_length' dividiendo el criptograma
-    en columnas y aplicando análisis de frecuencias a cada una.
+    Recupera la clave más probable para una longitud dada 'longitud_clave'
+    dividiendo el criptograma en columnas y aplicando el análisis Chi-cuadrado a cada una.
     
     Retorna:
-    - 'key': Palabra clave más probable
-    - 'columns_analysis': Detalle del ranking de letras candidatas por cada posición
+    - 'recovered_key': Palabra clave más probable
+    - 'columns': Detalle del ranking de letras candidatas por cada posición
     """
-    clean_c = "".join([ch for ch in ciphertext.upper() if ch in ALPHABET_26])
-    cosets = split_into_cosets(clean_c, key_length)
+    c_limpio = "".join([ch for ch in criptograma.upper() if ch in ALFABETO_ESP_26])
+    subtextos = particionar_en_subtextos(c_limpio, longitud_clave)
     
-    best_key_chars = []
-    columns_detail = []
+    mejores_letras_clave = []
+    detalle_columnas = []
     
-    for col_idx, coset in enumerate(cosets):
-        candidates = solve_key_for_column(coset)
-        best_candidate = candidates[0]
-        best_key_chars.append(best_candidate['letter'])
+    for idx_col, subtexto in enumerate(subtextos):
+        candidatos = resolver_clave_para_columna(subtexto)
+        mejor_candidato = candidatos[0]
+        mejores_letras_clave.append(mejor_candidato['letter'])
         
-        columns_detail.append({
-            'column_index': col_idx,
-            'coset_length': len(coset),
-            'coset_sample': coset[:30] + ("..." if len(coset) > 30 else ""),
-            'best_letter': best_candidate['letter'],
-            'best_chi2': best_candidate['chi2'],
-            'candidates_ranking': candidates[:5]  # Top 5 candidatos
+        detalle_columnas.append({
+            'column_index': idx_col,
+            'coset_length': len(subtexto),
+            'coset_sample': subtexto[:30] + ("..." if len(subtexto) > 30 else ""),
+            'best_letter': mejor_candidato['letter'],
+            'best_chi2': mejor_candidato['chi2'],
+            'candidates_ranking': candidatos[:5]  # Top 5 candidatos
         })
         
-    reconstructed_key = "".join(best_key_chars)
+    clave_reconstruida = "".join(mejores_letras_clave)
     
     return {
-        'key_length': key_length,
-        'recovered_key': reconstructed_key,
-        'columns': columns_detail
+        'key_length': longitud_clave,
+        'recovered_key': clave_reconstruida,
+        'columns': detalle_columnas
     }
+
+
+# --- Alias para compatibilidad hacia atrás ---
+score_shift_chi_squared = calcular_discrepancia_chi_cuadrado
+solve_key_for_column = resolver_clave_para_columna
+recover_vigenere_key = deducir_clave_por_frecuencias
+

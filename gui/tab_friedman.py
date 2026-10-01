@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
     QTableWidgetItem, QHeaderView, QGroupBox
 )
 from PyQt5.QtCore import Qt
-from data.spanish_freq import IC_THEORETICAL_SPANISH, IC_THEORETICAL_RANDOM
+from data.spanish_freq import IC_TEORICO_ESP, IC_TEORICO_ALEATORIO
 
 
 class TabFriedman(QWidget):
@@ -29,10 +29,10 @@ class TabFriedman(QWidget):
         self.lbl_global_ic = QLabel("IC Global del Criptograma: --")
         self.lbl_global_ic.setObjectName("badgeLabel")
         
-        lbl_esp = QLabel(f"IC Teórico Español: {IC_THEORETICAL_SPANISH:.4f}")
+        lbl_esp = QLabel(f"IC Teórico Español: {IC_TEORICO_ESP:.4f}")
         lbl_esp.setObjectName("badgeLabel")
         
-        lbl_rand = QLabel(f"IC Aleatorio (1/26): {IC_THEORETICAL_RANDOM:.4f}")
+        lbl_rand = QLabel(f"IC Aleatorio (1/26): {IC_TEORICO_ALEATORIO:.4f}")
         lbl_rand.setObjectName("badgeLabel")
 
         self.lbl_friedman_est = QLabel("Estimación directa Friedman: m ≈ --")

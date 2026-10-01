@@ -10,9 +10,9 @@ from PyQt5.QtWidgets import (
     QPushButton, QComboBox
 )
 from PyQt5.QtCore import Qt, pyqtSignal
-from core.frequency import recover_vigenere_key, solve_key_for_column
-from core.friedman import split_into_cosets
-from data.spanish_freq import ALPHABET_26
+from core.frequency import deducir_clave_por_frecuencias, resolver_clave_para_columna
+from core.friedman import particionar_en_subtextos
+from data.spanish_freq import ALFABETO_ESP_26
 
 
 class TabFrecuencias(QWidget):
@@ -99,7 +99,7 @@ class TabFrecuencias(QWidget):
         layout.addWidget(col_box)
 
     def set_ciphertext(self, ciphertext: str, suggested_length: int = 3):
-        self.ciphertext = "".join([ch for ch in ciphertext.upper() if ch in ALPHABET_26])
+        self.ciphertext = "".join([ch for ch in ciphertext.upper() if ch in ALFABETO_ESP_26])
         self.spin_key_len.blockSignals(True)
         self.spin_key_len.setValue(suggested_length)
         self.spin_key_len.blockSignals(False)
@@ -109,7 +109,7 @@ class TabFrecuencias(QWidget):
         if not self.ciphertext:
             return
         m = self.spin_key_len.value()
-        self.current_key_data = recover_vigenere_key(self.ciphertext, m)
+        self.current_key_data = deducir_clave_por_frecuencias(self.ciphertext, m)
         rec_key = self.current_key_data['recovered_key']
         self.lbl_recovered_key.setText(f"CLAVE:  [ { '  '.join(rec_key) } ]")
 
@@ -130,12 +130,12 @@ class TabFrecuencias(QWidget):
         if col_index < 0 or col_index >= m:
             return
 
-        cosets = split_into_cosets(self.ciphertext, m)
+        cosets = particionar_en_subtextos(self.ciphertext, m)
         coset = cosets[col_index] if col_index < len(cosets) else ""
         self.lbl_col_info.setText(f"Subtexto: {len(coset)} letras | Muestra: {coset[:18]}...")
 
         # Obtener ranking de las 26 letras
-        candidates = solve_key_for_column(coset)
+        candidates = resolver_clave_para_columna(coset)
         self.table_candidates.setRowCount(len(candidates))
 
         for row, cand in enumerate(candidates):

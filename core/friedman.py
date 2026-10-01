@@ -27,102 +27,115 @@ El promedio de los IC de los subtextos para el periodo correcto 'm' mostrará un
 
 from collections import Counter
 from typing import Dict, List, Tuple, Any
-from data.spanish_freq import ALPHABET_26, IC_THEORETICAL_SPANISH, IC_THEORETICAL_RANDOM
+from data.spanish_freq import ALFABETO_ESP_26, IC_TEORICO_ESP, IC_TEORICO_ALEATORIO
 
 
-def calculate_ic(text: str) -> float:
+def calcular_indice_coincidencia(texto: str) -> float:
     """
     Calcula el Índice de Coincidencia (IC) de una cadena de texto.
     Solo considera caracteres alfabéticos A-Z.
     
+    Fórmula:
+        IC = sum(f_i * (f_i - 1)) / (N * (N - 1))
+        
     Retorna 0.0 si la longitud del texto es menor a 2.
     """
-    clean = [ch for ch in text.upper() if ch in ALPHABET_26]
-    n = len(clean)
+    limpio = [ch for ch in texto.upper() if ch in ALFABETO_ESP_26]
+    n = len(limpio)
     if n <= 1:
         return 0.0
     
-    counts = Counter(clean)
-    numerator = sum(count * (count - 1) for count in counts.values())
-    denominator = n * (n - 1)
+    conteos = Counter(limpio)
+    numerador = sum(c * (c - 1) for c in conteos.values())
+    denominador = n * (n - 1)
     
-    return numerator / denominator
+    return numerador / denominador
 
 
-def split_into_cosets(text: str, k: int) -> List[str]:
+def particionar_en_subtextos(texto: str, k: int) -> List[str]:
     """
-    Divide el texto en 'k' subcadenas periódicas (cosets):
+    Divide el texto en 'k' subcadenas periódicas (cosets o columnas):
     C_j contiene los caracteres en posiciones i donde i % k == j.
     """
-    clean = "".join([ch for ch in text.upper() if ch in ALPHABET_26])
-    cosets = [[] for _ in range(k)]
-    for idx, ch in enumerate(clean):
-        cosets[idx % k].append(ch)
-    return ["".join(c) for c in cosets]
+    limpio = "".join([ch for ch in texto.upper() if ch in ALFABETO_ESP_26])
+    subtextos = [[] for _ in range(k)]
+    for idx, ch in enumerate(limpio):
+        subtextos[idx % k].append(ch)
+    return ["".join(c) for c in subtextos]
 
 
-def friedman_period_analysis(
-    ciphertext: str,
-    max_period: int = 15,
-    min_period: int = 1
+def analizar_periodos_friedman(
+    criptograma: str,
+    max_periodo: int = 15,
+    min_periodo: int = 1
 ) -> Dict[str, Any]:
     """
-    Evalúa el Índice de Coincidencia promedio para periodos candidatos desde min_period hasta max_period.
+    Evalúa el Índice de Coincidencia promedio para periodos candidatos desde min_periodo hasta max_periodo.
     
     Retorna:
-    - 'global_ic': IC del criptograma completo sin particionar
-    - 'periods_data': Lista de diccionarios con {period, average_ic, coset_ics, delta_to_spanish}
-    - 'best_period_by_ic': El periodo 'k' con mayor IC promedio
-    - 'estimated_key_length_friedman': Estimación directa según fórmula de Friedman
+    - 'global_ic': IC del criptograma completo sin particionar.
+    - 'periods_data': Lista de diccionarios con {period, average_ic, coset_ics, delta_to_spanish}.
+    - 'best_period_by_ic': El periodo 'k' con mayor IC promedio.
+    - 'estimated_key_length_friedman': Estimación directa según fórmula de Friedman.
     """
-    clean_c = "".join([ch for ch in ciphertext.upper() if ch in ALPHABET_26])
-    n = len(clean_c)
-    global_ic = calculate_ic(clean_c)
+    c_limpio = "".join([ch for ch in criptograma.upper() if ch in ALFABETO_ESP_26])
+    n = len(c_limpio)
+    ic_global = calcular_indice_coincidencia(c_limpio)
     
-    periods_data = []
-    best_period = 1
-    best_avg_ic = 0.0
+    datos_periodos = []
+    mejor_periodo = 1
+    mejor_ic_promedio = 0.0
     
-    for k in range(min_period, min(max_period + 1, n + 1)):
-        cosets = split_into_cosets(clean_c, k)
-        # Calcular IC de cada coset
-        coset_ics = [calculate_ic(coset) for coset in cosets if len(coset) > 1]
+    for k in range(min_periodo, min(max_periodo + 1, n + 1)):
+        subtextos = particionar_en_subtextos(c_limpio, k)
+        # Calcular IC de cada coset/subtexto
+        ics_subtextos = [calcular_indice_coincidencia(s) for s in subtextos if len(s) > 1]
         
-        if coset_ics:
-            avg_ic = sum(coset_ics) / len(coset_ics)
+        if ics_subtextos:
+            ic_promedio = sum(ics_subtextos) / len(ics_subtextos)
         else:
-            avg_ic = 0.0
+            ic_promedio = 0.0
             
-        delta_spanish = abs(avg_ic - IC_THEORETICAL_SPANISH)
+        delta_espanol = abs(ic_promedio - IC_TEORICO_ESP)
         
-        periods_data.append({
+        datos_periodos.append({
             'period': k,
-            'average_ic': avg_ic,
-            'coset_ics': coset_ics,
-            'delta_to_spanish': delta_spanish,
-            'is_probable': avg_ic >= 0.060  # Umbral cercano a lenguaje natural
+            'average_ic': ic_promedio,
+            'coset_ics': ics_subtextos,
+            'delta_to_spanish': delta_espanol,
+            'is_probable': ic_promedio >= 0.060  # Umbral cercano al lenguaje natural
         })
         
-        # Considerar el mejor periodo (que tenga mayor IC)
-        if avg_ic > best_avg_ic:
-            best_avg_ic = avg_ic
-            best_period = k
+        # Considerar el mejor periodo (con mayor IC cercano al español)
+        if ic_promedio > mejor_ic_promedio:
+            mejor_ic_promedio = ic_promedio
+            mejor_periodo = k
             
-    # Estimación directa por fórmula de Friedman:
+    # Estimación analítica directa por fórmula de Friedman:
     # m ≈ (k_p - k_r) / (IC_obs - k_r + (k_p - IC_obs) / N)
-    friedman_m_estimate = None
-    kp = IC_THEORETICAL_SPANISH
-    kr = IC_THEORETICAL_RANDOM
-    if n > 1 and (global_ic - kr) > 0:
-        denom = (global_ic - kr) + ((kp - global_ic) / n)
+    estimacion_friedman_m = None
+    kp = IC_TEORICO_ESP
+    kr = IC_TEORICO_ALEATORIO
+    if n > 1 and (ic_global - kr) > 0:
+        denom = (ic_global - kr) + ((kp - ic_global) / n)
         if denom > 0:
-            friedman_m_estimate = round((kp - kr) / denom, 2)
+            estimacion_friedman_m = round((kp - kr) / denom, 2)
             
     return {
         'ciphertext_length': n,
-        'global_ic': global_ic,
-        'periods_data': periods_data,
-        'best_period_by_ic': best_period,
-        'best_avg_ic': best_avg_ic,
-        'friedman_formula_estimate': friedman_m_estimate
+        'global_ic': ic_global,
+        'periods_data': datos_periodos,
+        'best_period_by_ic': mejor_periodo,
+        'best_avg_ic': mejor_ic_promedio,
+        'friedman_formula_estimate': estimacion_friedman_m
     }
+
+
+# --- Alias para compatibilidad hacia atrás ---
+calculate_ic = calcular_indice_coincidencia
+split_into_cosets = particionar_en_subtextos
+friedman_period_analysis = analizar_periodos_friedman
+ALPHABET_26 = ALFABETO_ESP_26
+IC_THEORETICAL_SPANISH = IC_TEORICO_ESP
+IC_THEORETICAL_RANDOM = IC_TEORICO_ALEATORIO
+

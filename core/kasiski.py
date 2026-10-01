@@ -20,109 +20,116 @@ from collections import defaultdict
 from typing import Dict, List, Tuple, Any
 
 
-def get_factors(number: int, min_val: int = 2, max_val: int = 25) -> List[int]:
+def obtener_divisores_distancia(numero: int, min_val: int = 2, max_val: int = 25) -> List[int]:
     """
-    Obtiene todos los divisores enteros de un número dentro del rango [min_val, max_val].
+    Obtiene todos los divisores enteros de una distancia dentro del rango [min_val, max_val].
+    Cada divisor representa una longitud de clave potencial 'm' tal que m | Δ.
     """
-    factors = []
-    for d in range(min_val, min(number + 1, max_val + 1)):
-        if number % d == 0:
-            factors.append(d)
-    return factors
+    divisores = []
+    for d in range(min_val, min(numero + 1, max_val + 1)):
+        if numero % d == 0:
+            divisores.append(d)
+    return divisores
 
 
-def find_repeated_ngrams(ciphertext: str, n: int = 3) -> Dict[str, List[int]]:
+def buscar_secuencias_repetidas(criptograma: str, n: int = 3) -> Dict[str, List[int]]:
     """
-    Encuentra todas las secuencias de longitud 'n' que se repiten en el criptograma.
+    Encuentra todas las secuencias (n-gramas o trigramas) que se repiten en el criptograma.
     
     Retorna:
-        Diccionario {secuencia: [posiciones_donde_aparece]} para aquellas con len(pos) >= 2.
+        Diccionario {secuencia: [posiciones_donde_aparece]} para aquellas con repeticiones >= 2.
     """
-    positions = defaultdict(list)
-    length = len(ciphertext)
+    posiciones = defaultdict(list)
+    longitud = len(criptograma)
     
-    for i in range(length - n + 1):
-        ngram = ciphertext[i:i + n]
-        positions[ngram].append(i)
+    for i in range(longitud - n + 1):
+        ngram = criptograma[i:i + n]
+        posiciones[ngram].append(i)
         
     # Filtrar únicamente los n-gramas que se repiten al menos 2 veces
-    repeated = {ngram: pos_list for ngram, pos_list in positions.items() if len(pos_list) >= 2}
-    return repeated
+    repetidos = {ngram: pos_list for ngram, pos_list in posiciones.items() if len(pos_list) >= 2}
+    return repetidos
 
 
-def kasiski_examination(
-    ciphertext: str,
-    ngram_lengths: List[int] = [3, 4, 5],
-    min_key_len: int = 2,
-    max_key_len: int = 25
+def ejecutar_examen_kasiski(
+    criptograma: str,
+    longitudes_ngram: List[int] = [3, 4, 5],
+    min_long_clave: int = 2,
+    max_long_clave: int = 25
 ) -> Dict[str, Any]:
     """
     Ejecuta el examen de Kasiski completo sobre el texto cifrado.
     
     Retorna un diccionario detallado con:
-    - 'repeated_ngrams': Lista de tuplas con el detalle de cada n-grama repetido:
-        (ngram, posiciones, distancias_consecutivas, todas_las_distancias, factores)
-    - 'distances': Lista completa de todas las distancias halladas
-    - 'factor_counts': Conteo de frecuencia de cada divisor (candidatos a longitud de clave)
-    - 'top_key_lengths': Lista ordenada [(longitud_candidata, votos/frecuencia), ...]
-    - 'gcd_overall': Máximo común divisor global de las distancias
+    - 'repeated_ngrams': Detalle de cada n-grama repetido, posiciones, distancias y factores.
+    - 'distances': Lista completa de todas las distancias Δ halladas.
+    - 'factor_counts': Conteo de votos de cada divisor candidato a longitud de clave.
+    - 'top_key_lengths': Lista ordenada [(longitud_candidata, votos), ...]
+    - 'gcd_overall': Máximo común divisor global de las distancias.
     """
-    clean_c = "".join([ch for ch in ciphertext.upper() if ch.isalpha()])
+    c_limpio = "".join([ch for ch in criptograma.upper() if ch.isalpha()])
     
-    all_repeated_data = []
-    all_distances = []
-    factor_histogram = defaultdict(int)
+    datos_repetidos = []
+    todas_las_distancias = []
+    histograma_factores = defaultdict(int)
     
-    # Procesar n-gramas (por defecto trigramas 3, y superiores)
-    for n in ngram_lengths:
-        repeated = find_repeated_ngrams(clean_c, n=n)
-        for ngram, pos_list in sorted(repeated.items(), key=lambda item: len(item[1]), reverse=True):
-            # Calcular distancias entre apariciones consecutivas y entre pares
-            consecutive_distances = []
-            for i in range(len(pos_list) - 1):
-                d = pos_list[i + 1] - pos_list[i]
-                consecutive_distances.append(d)
-                all_distances.append(d)
+    # Procesar n-gramas (por defecto trigramas 3, 4, 5)
+    for n in longitudes_ngram:
+        repetidos = buscar_secuencias_repetidas(c_limpio, n=n)
+        for ngram, lista_pos in sorted(repetidos.items(), key=lambda item: len(item[1]), reverse=True):
+            # Calcular distancias entre apariciones consecutivas
+            distancias_consecutivas = []
+            for i in range(len(lista_pos) - 1):
+                d = lista_pos[i + 1] - lista_pos[i]
+                distancias_consecutivas.append(d)
+                todas_las_distancias.append(d)
                 
-                # Descomponer distancia en factores
-                factors = get_factors(d, min_key_len, max_key_len)
-                for f in factors:
-                    factor_histogram[f] += 1
+                # Descomponer distancia en factores divisores
+                divisores = obtener_divisores_distancia(d, min_long_clave, max_long_clave)
+                for f in divisores:
+                    histograma_factores[f] += 1
             
-            # Factores de las distancias consecutivas
-            ngram_factors = set()
-            for d in consecutive_distances:
-                ngram_factors.update(get_factors(d, min_key_len, max_key_len))
+            # Factores únicos de las distancias de este n-grama
+            factores_ngram = set()
+            for d in distancias_consecutivas:
+                factores_ngram.update(obtener_divisores_distancia(d, min_long_clave, max_long_clave))
                 
-            all_repeated_data.append({
+            datos_repetidos.append({
                 'ngram': ngram,
                 'length': n,
-                'count': len(pos_list),
-                'positions': pos_list,
-                'distances': consecutive_distances,
-                'factors': sorted(list(ngram_factors))
+                'count': len(lista_pos),
+                'positions': lista_pos,
+                'distances': distancias_consecutivas,
+                'factors': sorted(list(factores_ngram))
             })
             
-    # Ordenar candidatos a longitud por mayor frecuencia acumulada
-    sorted_candidates = sorted(
-        [(k, v) for k, v in factor_histogram.items() if min_key_len <= k <= max_key_len],
+    # Ordenar candidatos a longitud de clave por mayor frecuencia acumulada (votos)
+    candidatos_ordenados = sorted(
+        [(k, v) for k, v in histograma_factores.items() if min_long_clave <= k <= max_long_clave],
         key=lambda x: x[1],
         reverse=True
     )
     
     # Calcular MCD global si hay distancias
-    overall_gcd = 0
-    if all_distances:
-        overall_gcd = all_distances[0]
-        for d in all_distances[1:]:
-            overall_gcd = math.gcd(overall_gcd, d)
+    mcd_global = 0
+    if todas_las_distancias:
+        mcd_global = todas_las_distancias[0]
+        for d in todas_las_distancias[1:]:
+            mcd_global = math.gcd(mcd_global, d)
             
     return {
-        'clean_ciphertext': clean_c,
-        'total_length': len(clean_c),
-        'repeated_ngrams': all_repeated_data,
-        'all_distances': all_distances,
-        'factor_counts': dict(sorted(factor_histogram.items())),
-        'top_key_lengths': sorted_candidates,
-        'gcd_overall': overall_gcd
+        'clean_ciphertext': c_limpio,
+        'total_length': len(c_limpio),
+        'repeated_ngrams': datos_repetidos,
+        'all_distances': todas_las_distancias,
+        'factor_counts': dict(sorted(histograma_factores.items())),
+        'top_key_lengths': candidatos_ordenados,
+        'gcd_overall': mcd_global
     }
+
+
+# --- Alias para compatibilidad hacia atrás ---
+get_factors = obtener_divisores_distancia
+find_repeated_ngrams = buscar_secuencias_repetidas
+kasiski_examination = ejecutar_examen_kasiski
+

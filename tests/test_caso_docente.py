@@ -11,11 +11,11 @@ Valida:
 """
 
 import unittest
-from core.vigenere import normalize_text, encrypt, decrypt
-from core.kasiski import kasiski_examination
-from core.friedman import friedman_period_analysis, calculate_ic
-from core.frequency import recover_vigenere_key
-from core.analyzer import VigenereCryptanalyzer
+from core.vigenere import normalizar_texto, cifrar_vigenere, descifrar_vigenere
+from core.kasiski import ejecutar_examen_kasiski
+from core.friedman import analizar_periodos_friedman, calcular_indice_coincidencia
+from core.frequency import deducir_clave_por_frecuencias
+from core.analyzer import CriptoanalizadorVigenere
 
 
 class TestCriptoanalizadorDocente(unittest.TestCase):
@@ -30,21 +30,21 @@ class TestCriptoanalizadorDocente(unittest.TestCase):
             "SOLA O SER PROFUNDO EN EL PENSAMIENTO DEL HOMBRE QUE BUSCA LA VERDAD Y LA SABIDURIA."
         )
         self.key = "MAR"
-        self.normalized_plain = normalize_text(self.plain_source)
-        self.ciphertext = encrypt(self.normalized_plain, self.key)
+        self.normalized_plain = normalizar_texto(self.plain_source)
+        self.ciphertext = cifrar_vigenere(self.normalized_plain, self.key)
 
     def test_01_text_starts_with_required_prefix(self):
         """Verifica que el texto claro comience exactamente con 'SOLAOSERPROFUNDO'."""
         self.assertTrue(self.normalized_plain.startswith("SOLAOSERPROFUNDO"))
 
     def test_02_encryption_and_decryption_symmetry(self):
-        """Verifica que encrypt y decrypt sean operaciones inversas exactas."""
-        decrypted = decrypt(self.ciphertext, self.key)
+        """Verifica que cifrar_vigenere y descifrar_vigenere sean operaciones inversas exactas."""
+        decrypted = descifrar_vigenere(self.ciphertext, self.key)
         self.assertEqual(decrypted, self.normalized_plain)
 
     def test_03_kasiski_detects_trigrams_and_factor_3(self):
         """Verifica el examen de Kasiski: detección de trigramas y prevalencia del factor 3."""
-        kasiski_res = kasiski_examination(self.ciphertext, ngram_lengths=[3])
+        kasiski_res = ejecutar_examen_kasiski(self.ciphertext, longitudes_ngram=[3])
         repeated = kasiski_res['repeated_ngrams']
         
         # Deben existir trigramas repetidos
@@ -60,7 +60,7 @@ class TestCriptoanalizadorDocente(unittest.TestCase):
 
     def test_04_friedman_ic_peak_at_period_3(self):
         """Verifica que el Índice de Coincidencia promedio tenga un pico cercano al español en k=3."""
-        friedman_res = friedman_period_analysis(self.ciphertext, max_period=8)
+        friedman_res = analizar_periodos_friedman(self.ciphertext, max_periodo=8)
         periods_dict = {p['period']: p['average_ic'] for p in friedman_res['periods_data']}
         
         ic_period_1 = periods_dict[1]
@@ -75,13 +75,13 @@ class TestCriptoanalizadorDocente(unittest.TestCase):
 
     def test_05_chi_squared_recovers_exact_key(self):
         """Verifica la recuperación exacta de la palabra clave 'MAR' mediante frecuencias Chi-cuadrado."""
-        recovery = recover_vigenere_key(self.ciphertext, key_length=3)
+        recovery = deducir_clave_por_frecuencias(self.ciphertext, longitud_clave=3)
         self.assertEqual(recovery['recovered_key'], "MAR", f"Se esperaba clave 'MAR', se obtuvo '{recovery['recovered_key']}'.")
 
     def test_06_full_pipeline_orchestrator(self):
         """Verifica el flujo automatizado completo de extremo a extremo."""
-        analyzer = VigenereCryptanalyzer(self.ciphertext)
-        result = analyzer.run_full_analysis()
+        analyzer = CriptoanalizadorVigenere(self.ciphertext)
+        result = analyzer.ejecutar_analisis_completo()
         
         self.assertEqual(result['determined_key_length'], 3)
         self.assertEqual(result['recovered_key'], "MAR")

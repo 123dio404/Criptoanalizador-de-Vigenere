@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (
     QLineEdit, QPushButton, QGroupBox, QMessageBox
 )
 from PyQt5.QtCore import pyqtSignal
-from core.vigenere import encrypt, decrypt, normalize_text
+from core.vigenere import cifrar_vigenere, descifrar_vigenere, normalizar_texto
 
 CASO_DOCENTE_TEXTO = (
     "SOLA O SER PROFUNDO EN EL SILENCIO DE LA NOCHE CUANDO LA LUNA ILUMINA EL CAMINO. "
@@ -128,7 +128,7 @@ class TabCifrador(QWidget):
             QMessageBox.warning(self, "Atención", "Por favor ingrese una clave para cifrar.")
             return
         try:
-            cipher = encrypt(plain, key)
+            cipher = cifrar_vigenere(plain, key)
             self.txt_cipher.setText(cipher)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error al cifrar: {str(e)}")
@@ -143,7 +143,7 @@ class TabCifrador(QWidget):
             QMessageBox.warning(self, "Atención", "Ingrese la clave para descifrar.")
             return
         try:
-            plain = decrypt(cipher, key)
+            plain = descifrar_vigenere(cipher, key)
             self.txt_plain.setText(plain)
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error al descifrar: {str(e)}")
@@ -154,12 +154,12 @@ class TabCifrador(QWidget):
         self.input_key.clear()
 
     def actualizar_contador(self):
-        cleaned = normalize_text(self.txt_cipher.toPlainText(), keep_spaces=False)
+        cleaned = normalizar_texto(self.txt_cipher.toPlainText(), mantener_espacios=False)
         self.lbl_stats.setText(f"Longitud del criptograma: {len(cleaned)} caracteres alfabéticos.")
 
     def enviar_a_analisis(self):
         cipher = self.txt_cipher.toPlainText().strip()
-        cleaned = normalize_text(cipher, keep_spaces=False)
+        cleaned = normalizar_texto(cipher, mantener_espacios=False)
         if len(cleaned) < 15:
             QMessageBox.warning(
                 self,

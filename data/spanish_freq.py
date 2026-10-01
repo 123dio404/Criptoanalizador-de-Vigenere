@@ -8,7 +8,7 @@ Texto aleatorio (equiprobable): 1 / 26 ≈ 0.03846.
 
 # Frecuencias porcentuales típicas del español (suman ~100%)
 # Fuente: RAE / Frecuencias estándar para criptoanálisis
-SPANISH_FREQUENCIES_26 = {
+FRECUENCIAS_PORCENTUALES_ESP = {
     'A': 12.53,
     'B': 1.42,
     'C': 4.68,
@@ -37,16 +37,25 @@ SPANISH_FREQUENCIES_26 = {
     'Z': 0.52
 }
 
-# Alfabeto estándar de 26 letras
-ALPHABET_26 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+# Alfabeto estándar de 26 letras (A-Z)
+ALFABETO_ESP_26 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # Frecuencias relativas normalizadas (0.0 a 1.0)
-SPANISH_PROBABILITIES_26 = {
-    letter: SPANISH_FREQUENCIES_26[letter] / 100.0
-    for letter in ALPHABET_26
+PROBABILIDADES_ESP = {
+    letra: FRECUENCIAS_PORCENTUALES_ESP[letra] / 100.0
+    for letra in ALFABETO_ESP_26
 }
 
-# Índice de coincidencia teórico esperado para español e inglés
-IC_THEORETICAL_SPANISH = 0.0740
-IC_THEORETICAL_ENGLISH = 0.0667
-IC_THEORETICAL_RANDOM = 1.0 / 26.0  # ~0.03846
+# Índice de coincidencia teórico esperado para español, inglés y aleatorio
+IC_TEORICO_ESP = 0.0740
+IC_TEORICO_INGLES = 0.0667
+IC_TEORICO_ALEATORIO = 1.0 / 26.0  # ~0.03846
+
+# --- Alias para mantener compatibilidad ---
+ALPHABET_26 = ALFABETO_ESP_26
+SPANISH_FREQUENCIES_26 = FRECUENCIAS_PORCENTUALES_ESP
+SPANISH_PROBABILITIES_26 = PROBABILIDADES_ESP
+IC_THEORETICAL_SPANISH = IC_TEORICO_ESP
+IC_THEORETICAL_ENGLISH = IC_TEORICO_INGLES
+IC_THEORETICAL_RANDOM = IC_TEORICO_ALEATORIO
+

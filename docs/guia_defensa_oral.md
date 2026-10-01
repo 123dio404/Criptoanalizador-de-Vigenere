@@ -49,11 +49,12 @@ Este documento te prepara para defender tu proyecto con total solvencia ante el 
 
 | Módulo | Archivo | Función Principal que debes abrir y explicar |
 | :--- | :--- | :--- |
-| **Cifrador/Descifrador** | [vigenere.py](file:///home/ovando/Projects/criptoanalizador/core/vigenere.py) | `encrypt()` y `decrypt()`: muestran la suma y resta modular mod 26. |
-| **Kasiski** | [kasiski.py](file:///home/ovando/Projects/criptoanalizador/core/kasiski.py) | `find_repeated_ngrams()` y `kasiski_examination()`: recorre trigramas, mide distancias y factoriza divisores. |
-| **Friedman (IC)** | [friedman.py](file:///home/ovando/Projects/criptoanalizador/core/friedman.py) | `calculate_ic()` y `split_into_cosets()`: calcula el numerador $\sum f_i(f_i-1)$ y promedia por cosets. |
-| **Frecuencias / Chi²** | [frequency.py](file:///home/ovando/Projects/criptoanalizador/core/frequency.py) | `score_shift_chi_squared()`: prueba los 26 desplazamientos evaluando $\sum (O-E)^2/E$. |
-| **Orquestador** | [analyzer.py](file:///home/ovando/Projects/criptoanalizador/core/analyzer.py) | `run_full_analysis()`: conecta el pipeline completo y genera la traza de auditoría. |
+| **Cifrador/Descifrador** | [vigenere.py](file:///home/ovando/Projects/criptoanalizador/core/vigenere.py) | `cifrar_vigenere()` y `descifrar_vigenere()`: muestran la suma y resta modular mod 26. |
+| **Kasiski** | [kasiski.py](file:///home/ovando/Projects/criptoanalizador/core/kasiski.py) | `buscar_secuencias_repetidas()` y `ejecutar_examen_kasiski()`: recorre trigramas, mide distancias y factoriza divisores. |
+| **Friedman (IC)** | [friedman.py](file:///home/ovando/Projects/criptoanalizador/core/friedman.py) | `calcular_indice_coincidencia()` y `particionar_en_subtextos()`: calcula el numerador $\sum f_i(f_i-1)$ y promedia por cosets. |
+| **Frecuencias / Chi²** | [frequency.py](file:///home/ovando/Projects/criptoanalizador/core/frequency.py) | `calcular_discrepancia_chi_cuadrado()` y `deducir_clave_por_frecuencias()`: prueba los 26 desplazamientos evaluando $\sum (O-E)^2/E$. |
+| **Orquestador** | [analyzer.py](file:///home/ovando/Projects/criptoanalizador/core/analyzer.py) | `ejecutar_analisis_completo()` de `CriptoanalizadorVigenere`: conecta el pipeline completo y genera la bitácora. |
+
 
 ---
 
