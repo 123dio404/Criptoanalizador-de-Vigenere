@@ -89,7 +89,7 @@ class TabCifrador(QWidget):
         self.lbl_stats = QLabel("Longitud del criptograma: 0 caracteres.")
         self.lbl_stats.setObjectName("badgeLabel")
 
-        self.btn_analizar = QPushButton("Enviar Criptograma a Análisis Completo (Kasiski + IC + Chi²)")
+        self.btn_analizar = QPushButton("Análisis(Kasiski + IC + Chi²)")
         self.btn_analizar.clicked.connect(lambda: self.analizar_solicitado.emit(self.criptograma()))
 
         action_layout.addWidget(self.lbl_stats)
