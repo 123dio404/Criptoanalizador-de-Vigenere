@@ -1,5 +1,5 @@
 """
-gui/styles.py
+views/styles.py
 Estilos visuales modernos para la interfaz gráfica PyQt5.
 Paleta de colores sobria, elegante y de alta legibilidad (tema Dark Slate / Cyber-Security).
 """
@@ -40,7 +40,55 @@ QLabel#badgeLabel {
     color: #38bdf8;
 }
 
-/* Pestañas (QTabWidget) */
+/* Panel informativo desplegable (icono "i") */
+QToolButton#infoButton {
+    background-color: #0f172a;
+    color: #38bdf8;
+    border: 2px solid #38bdf8;
+    border-radius: 12px;
+    min-width: 20px;
+    max-width: 20px;
+    min-height: 20px;
+    max-height: 20px;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+QToolButton#infoButton:hover {
+    background-color: #1e40af;
+    color: #ffffff;
+}
+
+QToolButton#infoButton:checked {
+    background-color: #38bdf8;
+    color: #0f172a;
+}
+
+QLabel#infoTitle {
+    color: #38bdf8;
+    font-weight: bold;
+}
+
+QLabel#infoBody {
+    color: #94a3b8;
+    font-style: italic;
+    background-color: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+/* Pestañas (QTabWidget).
+   El fondo de la barra debe coincidir con la ventana: si no, Qt pinta una línea gris
+   en los huecos de las esquinas redondeadas. */
+QTabBar {
+    background-color: #0f172a;
+    border: none;
+    qproperty-drawBase: 0;
+}
+
 QTabWidget::pane {
     border: 1px solid #334155;
     background-color: #1e293b;
@@ -53,7 +101,7 @@ QTabBar::tab {
     color: #94a3b8;
     border: 1px solid #334155;
     border-bottom: none;
-    padding: 10px 18px;
+    padding: 10px 14px;
     margin-right: 4px;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
@@ -138,6 +186,12 @@ QTableWidget {
     color: #e2e8f0;
     selection-background-color: #1e40af;
     selection-color: #ffffff;
+}
+
+/* El tramo del encabezado sin columnas hereda blanco si no se pinta explícitamente */
+QHeaderView {
+    background-color: #0f172a;
+    border: none;
 }
 
 QHeaderView::section {

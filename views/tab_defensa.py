@@ -1,5 +1,5 @@
 """
-gui/tab_defensa.py
+views/tab_defensa.py
 Pestaña de Apoyo Teórico y Preparación para la Defensa Oral (Control Anti-IA).
 Asignatura: ELC107 Criptografía y Seguridad - UAGRM.
 Incluye glosario técnico, fórmulas matemáticas explicadas y respuestas a preguntas de examen.
