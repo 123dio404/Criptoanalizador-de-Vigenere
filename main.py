@@ -1,14 +1,22 @@
 """
 main.py
-Punto de entrada del Criptoanalizador de Vigenère.
+Punto de entrada del Criptoanalizador de Vigenère (arquitectura MVC).
 Análisis estadístico mediante Test de Kasiski, Test de Friedman y Chi-Cuadrado (χ²).
+
+    Modelo      -> models/       (lógica criptográfica pura)
+    Vista       -> views/        (widgets PyQt5 pasivos)
+    Controlador -> controllers/  (une señales de la vista con el modelo)
 """
 
 import sys
-from PyQt5.QtWidgets import QApplication
+
 from PyQt5.QtCore import Qt
-from gui.main_window import MainWindow
-from gui.styles import MAIN_STYLESHEET
+from PyQt5.QtWidgets import QApplication
+
+from controllers.app_controller import AppController
+from models.analyzer import CriptoanalizadorVigenere
+from views.main_window import MainWindow
+from views.styles import MAIN_STYLESHEET
 
 
 def main():
@@ -23,8 +31,10 @@ def main():
     app.setOrganizationName("UAGRM")
     app.setStyleSheet(MAIN_STYLESHEET)
 
-    window = MainWindow()
-    window.show()
+    modelo = CriptoanalizadorVigenere()
+    vista = MainWindow()
+    controlador = AppController(modelo, vista)  # noqa: F841 (se mantiene vivo mientras corre la app)
+    vista.show()
 
     sys.exit(app.exec_())
 
