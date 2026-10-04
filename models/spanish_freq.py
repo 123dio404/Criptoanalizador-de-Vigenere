@@ -1,5 +1,5 @@
 """
-data/spanish_freq.py
+models/spanish_freq.py
 Frecuencias estadísticas de letras en el idioma español (monogramas)
 basadas en análisis de corpus de la Real Academia Española (RAE) y literatura clásica.
 Índice de Coincidencia teórico esperado en español: ~0.074.
@@ -50,12 +50,3 @@ PROBABILIDADES_ESP = {
 IC_TEORICO_ESP = 0.0740
 IC_TEORICO_INGLES = 0.0667
 IC_TEORICO_ALEATORIO = 1.0 / 26.0  # ~0.03846
-
-# --- Alias para mantener compatibilidad ---
-ALPHABET_26 = ALFABETO_ESP_26
-SPANISH_FREQUENCIES_26 = FRECUENCIAS_PORCENTUALES_ESP
-SPANISH_PROBABILITIES_26 = PROBABILIDADES_ESP
-IC_THEORETICAL_SPANISH = IC_TEORICO_ESP
-IC_THEORETICAL_ENGLISH = IC_TEORICO_INGLES
-IC_THEORETICAL_RANDOM = IC_TEORICO_ALEATORIO
-

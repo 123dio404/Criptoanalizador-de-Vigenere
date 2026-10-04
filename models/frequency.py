@@ -1,5 +1,5 @@
 """
-core/frequency.py
+models/frequency.py
 Análisis de frecuencias y recuperación de la clave mediante Chi-cuadrado (χ²) y Correlación.
 Asignatura: ELC107 Criptografía y Seguridad - UAGRM.
 
@@ -23,9 +23,9 @@ Se comparan con las frecuencias esperadas del español E_i = N * P_esp(i) median
 
 from collections import Counter
 from typing import Dict, List, Tuple, Any
-from data.spanish_freq import ALFABETO_ESP_26, PROBABILIDADES_ESP
-from core.friedman import particionar_en_subtextos
-from core.vigenere import LETRA_A_INDICE, INDICE_A_LETRA
+from models.spanish_freq import ALFABETO_ESP_26, PROBABILIDADES_ESP
+from models.friedman import particionar_en_subtextos
+from models.vigenere import LETRA_A_INDICE, INDICE_A_LETRA
 
 
 def calcular_discrepancia_chi_cuadrado(subtexto: str, desplazamiento: int) -> Tuple[float, float]:
@@ -85,12 +85,16 @@ def resolver_clave_para_columna(subtexto: str) -> List[Dict[str, Any]]:
         resultados.append({
             'shift': desplazamiento,
             'letter': letra,
-            'chi2': round(chi2, 2),
-            'correlation': round(corr, 4)
+            'chi2': chi2,
+            'correlation': corr
         })
-        
+
     # Ordenar principalmente por menor Chi-cuadrado y secundariamente por mayor correlación
+    # (se ordena con los valores exactos y se redondea solo para presentación).
     resultados.sort(key=lambda x: (x['chi2'], -x['correlation']))
+    for r in resultados:
+        r['chi2'] = round(r['chi2'], 2)
+        r['correlation'] = round(r['correlation'], 4)
     return resultados
 
 
@@ -103,6 +107,8 @@ def deducir_clave_por_frecuencias(criptograma: str, longitud_clave: int) -> Dict
     - 'recovered_key': Palabra clave más probable
     - 'columns': Detalle del ranking de letras candidatas por cada posición
     """
+    if longitud_clave < 1:
+        raise ValueError("La longitud de la clave debe ser al menos 1.")
     c_limpio = "".join([ch for ch in criptograma.upper() if ch in ALFABETO_ESP_26])
     subtextos = particionar_en_subtextos(c_limpio, longitud_clave)
     
@@ -116,11 +122,13 @@ def deducir_clave_por_frecuencias(criptograma: str, longitud_clave: int) -> Dict
         
         detalle_columnas.append({
             'column_index': idx_col,
+            'coset': subtexto,
             'coset_length': len(subtexto),
             'coset_sample': subtexto[:30] + ("..." if len(subtexto) > 30 else ""),
             'best_letter': mejor_candidato['letter'],
             'best_chi2': mejor_candidato['chi2'],
-            'candidates_ranking': candidatos[:5]  # Top 5 candidatos
+            'candidates_ranking': candidatos[:5],  # Top 5 candidatos
+            'full_ranking': candidatos             # Las 26 letras ordenadas
         })
         
     clave_reconstruida = "".join(mejores_letras_clave)
@@ -130,10 +138,3 @@ def deducir_clave_por_frecuencias(criptograma: str, longitud_clave: int) -> Dict
         'recovered_key': clave_reconstruida,
         'columns': detalle_columnas
     }
-
-
-# --- Alias para compatibilidad hacia atrás ---
-score_shift_chi_squared = calcular_discrepancia_chi_cuadrado
-solve_key_for_column = resolver_clave_para_columna
-recover_vigenere_key = deducir_clave_por_frecuencias
-

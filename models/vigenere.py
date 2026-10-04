@@ -1,5 +1,5 @@
 """
-core/vigenere.py
+models/vigenere.py
 Implementación del Cifrado de Vigenère y utilidades de normalización lingüística.
 Asignatura: ELC107 Criptografía y Seguridad - UAGRM.
 
@@ -16,7 +16,7 @@ Descifrado:
 """
 
 import unicodedata
-from data.spanish_freq import ALFABETO_ESP_26
+from models.spanish_freq import ALFABETO_ESP_26
 
 LETRA_A_INDICE = {char: idx for idx, char in enumerate(ALFABETO_ESP_26)}
 INDICE_A_LETRA = {idx: char for idx, char in enumerate(ALFABETO_ESP_26)}
@@ -122,12 +122,3 @@ def descifrar_vigenere(criptograma: str, clave: str) -> str:
         texto_plano.append(INDICE_A_LETRA[p_val])
         
     return "".join(texto_plano)
-
-
-# --- Alias para compatibilidad hacia atrás ---
-normalize_text = normalizar_texto
-encrypt = cifrar_vigenere
-decrypt = descifrar_vigenere
-CHAR_TO_INDEX = LETRA_A_INDICE
-INDEX_TO_CHAR = INDICE_A_LETRA
-

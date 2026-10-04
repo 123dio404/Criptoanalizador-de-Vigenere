@@ -11,11 +11,11 @@ Valida:
 """
 
 import unittest
-from core.vigenere import normalizar_texto, cifrar_vigenere, descifrar_vigenere
-from core.kasiski import ejecutar_examen_kasiski
-from core.friedman import analizar_periodos_friedman, calcular_indice_coincidencia
-from core.frequency import deducir_clave_por_frecuencias
-from core.analyzer import CriptoanalizadorVigenere
+from models.vigenere import normalizar_texto, cifrar_vigenere, descifrar_vigenere
+from models.kasiski import ejecutar_examen_kasiski
+from models.friedman import analizar_periodos_friedman, calcular_indice_coincidencia
+from models.frequency import deducir_clave_por_frecuencias
+from models.analyzer import CriptoanalizadorVigenere
 
 
 class TestCriptoanalizadorDocente(unittest.TestCase):

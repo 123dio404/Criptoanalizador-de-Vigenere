@@ -1,3 +1,0 @@
-"""
-Módulo core de criptoanálisis
-"""
