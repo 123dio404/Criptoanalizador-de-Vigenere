@@ -30,7 +30,7 @@ python3 main.py
 
 ### Ejecución de las Pruebas Automatizadas (Validación Caso Docente):
 ```bash
-python3 -m unittest tests/test_caso_docente.py -v
+python3 -m unittest discover -s tests -t . -v
 ```
 
 ---
@@ -49,38 +49,42 @@ python3 -m unittest tests/test_caso_docente.py -v
 
 ---
 
-## Estructura del Proyecto
+## Estructura del Proyecto (Arquitectura MVC)
 
 ```
 criptoanalizador/
-├── core/                     # LÓGICA MATEMÁTICA PURA (Sin librerías externas)
-│   ├── __init__.py
-│   ├── vigenere.py          # Cifrado/Descifrado Vigenère y normalización
-│   ├── kasiski.py           # Detección de trigramas, cálculo de distancias y divisores
-│   ├── friedman.py          # Cálculo de IC global y por partición de cosets
-│   ├── frequency.py         # Análisis de frecuencias por columnas (Chi-cuadrado)
-│   └── analyzer.py          # Orquestador del flujo de criptoanálisis
-├── data/
-│   ├── __init__.py
-│   └── spanish_freq.py      # Frecuencias oficiales de monogramas en español (RAE)
-├── gui/                      # INTERFAZ GRÁFICA MODERNA (PyQt5)
-│   ├── __init__.py
-│   ├── styles.py            # Hoja de estilos (Tema Slate / Dark)
-│   ├── tab_cifrador.py      # Cifrado, descifrado y carga rápida de prueba
-│   ├── tab_kasiski.py       # Visualización de trigramas, distancias y factores
-│   ├── tab_friedman.py      # Gráficas y tablas de periodos vs IC
-│   ├── tab_frecuencias.py   # Deducción interactiva de cada letra de la clave
-│   ├── tab_descifrado.py    # Descifrado final y exportador de trazas
-│   └── main_window.py       # Ventana principal integradora
-├── tests/
-│   ├── __init__.py
-│   └── test_caso_docente.py # Tests unitarios que validan el caso obligatorio
-├── docs/
-│   ├── plantilla_informe.md # Borrador completo del informe académico en PDF
-│   └── guia_defensa_oral.md # Preguntas frecuentes y justificación matemática
-├── main.py                   # Script de inicio
-└── README.md                 # Documentación técnica
+??? models/                   # MODELO: l?gica matem?tica pura (sin PyQt)
+?   ??? vigenere.py          # Cifrado/Descifrado Vigen?re y normalizaci?n
+?   ??? kasiski.py           # Detecci?n de n-gramas, distancias, divisores y factores comunes
+?   ??? friedman.py          # C?lculo de IC global y por partici?n de cosets
+?   ??? frequency.py         # An?lisis de frecuencias por columnas (Chi-cuadrado)
+?   ??? analyzer.py          # Fachada del modelo: orquesta el flujo de criptoan?lisis
+?   ??? spanish_freq.py      # Frecuencias de monogramas en espa?ol (RAE) e IC de referencia
+?   ??? caso_prueba.py       # Texto y clave del caso de prueba oficial
+??? views/                    # VISTA: widgets PyQt5 pasivos (no importan models/)
+?   ??? styles.py            # Hoja de estilos (Tema Slate / Dark)
+?   ??? widgets.py           # Componentes reutilizables (panel "i" desplegable, tablas)
+?   ??? main_window.py       # Ventana principal con las 5 pesta?as
+?   ??? tab_cifrador.py      # 1. Cifrado, descifrado y carga r?pida de prueba
+?   ??? tab_kasiski.py       # 2. Tablas de n-gramas y de factores (lado a lado)
+?   ??? tab_friedman.py      # 3. Tabla de periodos vs IC
+?   ??? tab_frecuencias.py   # 4. Deducci?n interactiva de cada letra de la clave
+?   ??? tab_descifrado.py    # 5. Descifrado final y exportador de trazas
+??? controllers/              # CONTROLADOR: une se?ales de las vistas con el modelo
+?   ??? app_controller.py    # Casos de uso: cifrar, analizar, explorar longitud, exportar
+?   ??? formateo.py          # Convierte resultados del modelo en filas/textos para las vistas
+??? tests/
+?   ??? test_caso_docente.py            # Valida el caso obligatorio de extremo a extremo
+?   ??? test_formateo_y_regresiones.py  # Formateo del controlador y regresi?n de bugs corregidos
+??? docs/
+?   ??? plantilla_informe.md # Borrador completo del informe acad?mico en PDF
+?   ??? guia_defensa_oral.md # Preguntas frecuentes y justificaci?n matem?tica
+??? main.py                   # Punto de entrada: compone Modelo + Vista + Controlador
+??? README.md                 # Documentaci?n t?cnica
 ```
+
+**Flujo MVC:** la vista emite una se?al (p. ej. `analizar_solicitado`) ? el `AppController` llama al
+modelo (`CriptoanalizadorVigenere`) ? `formateo.py` prepara las filas ? el controlador las entrega a la vista.
 
 ---
 

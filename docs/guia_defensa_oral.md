@@ -36,7 +36,7 @@ Este documento te prepara para defender tu proyecto con total solvencia ante el 
 
 ---
 
-### P5: ¿Cómo recupera tu código cada letra de la clave en `core/frequency.py`?
+### P5: ¿Cómo recupera tu código cada letra de la clave en `models/frequency.py`?
 > **Respuesta:**  
 > "Una vez conocida la longitud $m=3$, dividimos el criptograma en 3 columnas o cosets. Cada columna es un cifrado César independiente.  
 > Para cada columna, probamos los 26 desplazamientos posibles $s \in \{0, \dots, 25\}$. Desplazamos las letras de la columna hacia atrás y calculamos el estadístico de bondad de ajuste Chi-Cuadrado ($\chi^2$):
@@ -49,11 +49,11 @@ Este documento te prepara para defender tu proyecto con total solvencia ante el 
 
 | Módulo | Archivo | Función Principal que debes abrir y explicar |
 | :--- | :--- | :--- |
-| **Cifrador/Descifrador** | [vigenere.py](file:///home/ovando/Projects/criptoanalizador/core/vigenere.py) | `cifrar_vigenere()` y `descifrar_vigenere()`: muestran la suma y resta modular mod 26. |
-| **Kasiski** | [kasiski.py](file:///home/ovando/Projects/criptoanalizador/core/kasiski.py) | `buscar_secuencias_repetidas()` y `ejecutar_examen_kasiski()`: recorre trigramas, mide distancias y factoriza divisores. |
-| **Friedman (IC)** | [friedman.py](file:///home/ovando/Projects/criptoanalizador/core/friedman.py) | `calcular_indice_coincidencia()` y `particionar_en_subtextos()`: calcula el numerador $\sum f_i(f_i-1)$ y promedia por cosets. |
-| **Frecuencias / Chi²** | [frequency.py](file:///home/ovando/Projects/criptoanalizador/core/frequency.py) | `calcular_discrepancia_chi_cuadrado()` y `deducir_clave_por_frecuencias()`: prueba los 26 desplazamientos evaluando $\sum (O-E)^2/E$. |
-| **Orquestador** | [analyzer.py](file:///home/ovando/Projects/criptoanalizador/core/analyzer.py) | `ejecutar_analisis_completo()` de `CriptoanalizadorVigenere`: conecta el pipeline completo y genera la bitácora. |
+| **Cifrador/Descifrador** | [vigenere.py](file:///home/ovando/Projects/criptoanalizador/models/vigenere.py) | `cifrar_vigenere()` y `descifrar_vigenere()`: muestran la suma y resta modular mod 26. |
+| **Kasiski** | [kasiski.py](file:///home/ovando/Projects/criptoanalizador/models/kasiski.py) | `buscar_secuencias_repetidas()` y `ejecutar_examen_kasiski()`: recorre trigramas, mide distancias y factoriza divisores. |
+| **Friedman (IC)** | [friedman.py](file:///home/ovando/Projects/criptoanalizador/models/friedman.py) | `calcular_indice_coincidencia()` y `particionar_en_subtextos()`: calcula el numerador $\sum f_i(f_i-1)$ y promedia por cosets. |
+| **Frecuencias / Chi²** | [frequency.py](file:///home/ovando/Projects/criptoanalizador/models/frequency.py) | `calcular_discrepancia_chi_cuadrado()` y `deducir_clave_por_frecuencias()`: prueba los 26 desplazamientos evaluando $\sum (O-E)^2/E$. |
+| **Orquestador** | [analyzer.py](file:///home/ovando/Projects/criptoanalizador/models/analyzer.py) | `ejecutar_analisis_completo()` de `CriptoanalizadorVigenere`: conecta el pipeline completo y genera la bitácora. |
 
 
 ---

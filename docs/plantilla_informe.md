@@ -31,7 +31,7 @@ Friedrich Kasiski descubrió que si una misma secuencia de caracteres del texto 
 $$\Delta = pos_2 - pos_1 = q \cdot m \quad (q \in \mathbb{N})$$
 ambas ocurrencias del texto claro se cifrarán con exactamente la misma subsecuencia de la clave, produciendo secuencias idénticas en el criptograma.
 
-**Algoritmo implementado (`core/kasiski.py`):**
+**Algoritmo implementado (`models/kasiski.py`):**
 1. Recorrer el criptograma extrayendo ventanas de tamaño $n=3, 4, 5$.
 2. Registrar las listas de posiciones donde cada n-grama aparece.
 3. Para secuencias con frecuencia $\ge 2$, calcular las distancias consecutivas $\Delta_i = pos_{i+1} - pos_i$.
@@ -47,7 +47,7 @@ $$IC = \frac{\sum_{i=A}^{Z} f_i (f_i - 1)}{N (N - 1)}$$
 * **Texto Aleatorio / Distribución Uniforme:** $IC = 1/26 \approx 0.03846$.
 * **Criptograma Polialfabético Completo:** $IC_{global} \approx 0.040 - 0.048$ (debido al efecto suavizador de múltiples alfabetos).
 
-**Técnica de Partición en Cosets (`core/friedman.py`):**
+**Técnica de Partición en Cosets (`models/friedman.py`):**
 Para probar una longitud candidata $k \in [1, 20]$, el criptograma se particiona en $k$ columnas o subtextos:
 $$C_j = \{ c_i \mid i \equiv j \pmod k \}, \quad j \in \{0, 1, \dots, k-1\}$$
 Si $k = m$ (la longitud real de la clave), cada $C_j$ fue cifrado con un único desplazamiento César monoalfabético. Como la sustitución monoalfabética preserva la distribución interna de frecuencias, el $IC(C_j)$ individual se dispara hacia $\approx 0.0740$. El promedio:
