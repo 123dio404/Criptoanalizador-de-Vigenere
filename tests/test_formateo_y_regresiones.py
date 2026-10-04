@@ -10,7 +10,42 @@ from models.analyzer import CriptoanalizadorVigenere
 from models.caso_prueba import CLAVE_CASO_PRUEBA, TEXTO_CASO_PRUEBA
 from models.friedman import analizar_periodos_friedman
 from models.kasiski import ejecutar_examen_kasiski
-from models.vigenere import cifrar_vigenere
+from models.vigenere import cifrar_vigenere, contar_intersecciones, descifrar_vigenere, generar_tabla_vigenere
+
+
+class TestCifradoConFormato(unittest.TestCase):
+
+    def test_conserva_espacios_signos_y_mayusculas(self):
+        cifrado = cifrar_vigenere("Hola, Mundo!", "MAR", conservar_formato=True)
+        self.assertEqual(cifrado, "Tocm, Mlzdf!")
+
+    def test_es_reversible_con_caracteres_especiales(self):
+        texto = "¿Canción de año 2026? ¡Sí, señor!\nLínea 2."
+        cifrado = cifrar_vigenere(texto, "clave", conservar_formato=True)
+        self.assertEqual(descifrar_vigenere(cifrado, "clave", conservar_formato=True), texto)
+
+    def test_sin_formato_todo_seguido_en_mayusculas(self):
+        self.assertEqual(cifrar_vigenere("Hola, Mundo!", "MAR"), "TOCMMLZDF")
+
+    def test_intersecciones_cuentan_repeticiones(self):
+        """AAA con clave M usa tres veces el cruce (M, A); HOLA reparte un cruce por letra."""
+        self.assertEqual(contar_intersecciones("AAA", "M"), {("M", "A"): 3})
+        self.assertEqual(
+            contar_intersecciones("HOLA", "MAR"),
+            {("M", "H"): 1, ("A", "O"): 1, ("R", "L"): 1, ("M", "A"): 1},
+        )
+
+    def test_intersecciones_ignoran_lo_que_no_se_cifra(self):
+        self.assertEqual(
+            contar_intersecciones("A, A!", "M", conservar_formato=True),
+            {("M", "A"): 2},
+        )
+
+    def test_tabla_vigenere(self):
+        tabla = generar_tabla_vigenere()
+        self.assertEqual(len(tabla), 26)
+        self.assertEqual(tabla[0], "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        self.assertEqual(tabla[12][7], "T")  # H + M = T
 
 
 class TestRegresiones(unittest.TestCase):

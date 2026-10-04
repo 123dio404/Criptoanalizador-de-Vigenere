@@ -4,18 +4,23 @@ Vista de la pestaña 1: Cifrado, Descifrado y Carga de Criptogramas para Pruebas
 Vista pasiva: solo muestra datos y emite señales; no contiene lógica criptográfica.
 """
 
+from typing import Dict, Sequence, Tuple
+
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import (
-    QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QVBoxLayout, QWidget,
+    QCheckBox, QGroupBox, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QVBoxLayout,
+    QWidget,
 )
+
+from views.tabla_vigenere import PanelTablaVigenere
 
 
 class TabCifrador(QWidget):
     # Señales hacia el controlador
     cargar_caso_solicitado = pyqtSignal()
-    cifrar_solicitado = pyqtSignal(str, str)       # (texto_plano, clave)
-    descifrar_solicitado = pyqtSignal(str, str)    # (criptograma, clave)
-    analizar_solicitado = pyqtSignal(str)          # (criptograma)
+    cifrar_solicitado = pyqtSignal(str, str, bool)       # (texto_plano, clave, conservar_formato)
+    descifrar_solicitado = pyqtSignal(str, str, bool)    # (criptograma, clave, conservar_formato)
+    analizar_solicitado = pyqtSignal(str)                # (criptograma)
     criptograma_modificado = pyqtSignal(str)
 
     def __init__(self, parent=None):
@@ -23,22 +28,31 @@ class TabCifrador(QWidget):
         self._construir_ui()
 
     def _construir_ui(self):
-        layout = QVBoxLayout(self)
-        layout.setSpacing(14)
+        layout = QHBoxLayout(self)
+        layout.setSpacing(10)
 
         # Panel de Cifrado / Simulación
         cifrador_box = QGroupBox("Generador")
         cifrador_layout = QVBoxLayout(cifrador_box)
 
-        # Fila Clave
+        # Fila Clave + opción de formato
         key_layout = QHBoxLayout()
         lbl_key = QLabel("Palabra Clave:")
         self.input_key = QLineEdit()
         self.input_key.setPlaceholderText("Ejemplo: MAR, SECRETO, CLAVE...")
         self.input_key.setText("MAR")
         self.input_key.setMaximumWidth(250)
+
+        self.chk_formato = QCheckBox("Mantener espacios y caracteres especiales")
+        self.chk_formato.setToolTip(
+            "Activado: se respetan espacios, signos y mayúsculas/minúsculas; solo se cifran las letras A-Z.\n"
+            "Desactivado: el texto se normaliza a mayúsculas A-Z seguidas, sin espacios ni signos."
+        )
+
         key_layout.addWidget(lbl_key)
         key_layout.addWidget(self.input_key)
+        key_layout.addSpacing(16)
+        key_layout.addWidget(self.chk_formato)
         key_layout.addStretch()
         cifrador_layout.addLayout(key_layout)
 
@@ -54,12 +68,12 @@ class TabCifrador(QWidget):
         btn_layout = QHBoxLayout()
         self.btn_encrypt = QPushButton("Cifrar")
         self.btn_encrypt.clicked.connect(
-            lambda: self.cifrar_solicitado.emit(self.texto_plano(), self.clave())
+            lambda: self.cifrar_solicitado.emit(self.texto_plano(), self.clave(), self.conservar_formato())
         )
         self.btn_decrypt = QPushButton("Descifrar")
         self.btn_decrypt.setObjectName("secondaryButton")
         self.btn_decrypt.clicked.connect(
-            lambda: self.descifrar_solicitado.emit(self.criptograma(), self.clave())
+            lambda: self.descifrar_solicitado.emit(self.criptograma(), self.clave(), self.conservar_formato())
         )
         self.btn_clear = QPushButton("Limpiar Campos")
         self.btn_clear.setObjectName("secondaryButton")
@@ -97,7 +111,15 @@ class TabCifrador(QWidget):
         action_layout.addWidget(self.btn_analizar)
         cifrador_layout.addLayout(action_layout)
 
-        layout.addWidget(cifrador_box)
+        layout.addWidget(cifrador_box, 1)
+
+        # Sin factor de estirado: plegado solo ocupa el botón y el Generador llena el resto.
+        self.panel_tabla = PanelTablaVigenere()
+        layout.addWidget(self.panel_tabla)
+
+    def resizeEvent(self, evento) -> None:
+        super().resizeEvent(evento)
+        self.panel_tabla.ajustar_si_desplegado()
 
         self.txt_cipher.textChanged.connect(
             lambda: self.criptograma_modificado.emit(self.criptograma())
@@ -105,13 +127,16 @@ class TabCifrador(QWidget):
 
     # --- Lectura de entradas ---
     def texto_plano(self) -> str:
-        return self.txt_plain.toPlainText().strip()
+        return self.txt_plain.toPlainText()
 
     def clave(self) -> str:
         return self.input_key.text().strip()
 
     def criptograma(self) -> str:
-        return self.txt_cipher.toPlainText().strip()
+        return self.txt_cipher.toPlainText()
+
+    def conservar_formato(self) -> bool:
+        return self.chk_formato.isChecked()
 
     # --- Escritura de salidas ---
     def set_texto_plano(self, texto: str) -> None:
@@ -125,6 +150,12 @@ class TabCifrador(QWidget):
 
     def set_contador(self, cantidad: int) -> None:
         self.lbl_stats.setText(f"Longitud del criptograma: {cantidad} caracteres alfabéticos.")
+
+    def mostrar_tabla_vigenere(self, filas: Sequence[str], letras_clave: str,
+                               frecuencias: Dict[Tuple[str, str], int]) -> None:
+        """Rellena la tabla, pinta los cruces usados según su frecuencia y despliega el panel."""
+        self.panel_tabla.mostrar_tabla(filas, letras_clave, frecuencias)
+        self.panel_tabla.desplegar()
 
     def limpiar(self) -> None:
         self.txt_plain.clear()

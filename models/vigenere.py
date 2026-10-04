@@ -16,6 +16,9 @@ Descifrado:
 """
 
 import unicodedata
+from collections import Counter
+from typing import Dict, List, Tuple
+
 from models.spanish_freq import ALFABETO_ESP_26
 
 LETRA_A_INDICE = {char: idx for idx, char in enumerate(ALFABETO_ESP_26)}
@@ -38,7 +41,7 @@ def normalizar_texto(texto: str, mantener_espacios: bool = False) -> str:
     # Reemplazo explícito común en español antes de desmontar acentos
     texto_mayus = texto_mayus.replace('Á', 'A').replace('É', 'E').replace('Í', 'I')
     texto_mayus = texto_mayus.replace('Ó', 'O').replace('Ú', 'U').replace('Ü', 'U')
-    texto_mayus = texto_mayus.replace('Ñ', 'N')  # Para estándar Z_26
+    texto_mayus = texto_mayus.replace('Ñ', 'N')
     
     # Descomposición canónica
     forma_nfkd = unicodedata.normalize('NFKD', texto_mayus)
@@ -54,7 +57,59 @@ def normalizar_texto(texto: str, mantener_espacios: bool = False) -> str:
     return "".join(resultado)
 
 
-def cifrar_vigenere(texto_plano: str, clave: str) -> str:
+def contar_intersecciones(texto_claro: str, clave: str, conservar_formato: bool = False) -> Dict[Tuple[str, str], int]:
+    """
+    Cuenta cuántas veces se usa cada cruce (letra_clave, letra_clara) al cifrar el texto.
+    La letra clara es la columna de la tabla y la letra clave es la fila.
+    """
+    k_limpia = normalizar_texto(clave, mantener_espacios=False)
+    if not k_limpia or not texto_claro:
+        return {}
+
+    if conservar_formato:
+        letras = [ch.upper() for ch in texto_claro if ch.isascii() and ch.upper() in LETRA_A_INDICE]
+    else:
+        letras = list(normalizar_texto(texto_claro, mantener_espacios=False))
+
+    pares = ((k_limpia[i % len(k_limpia)], letra) for i, letra in enumerate(letras))
+    return dict(Counter(pares))
+
+
+def generar_tabla_vigenere() -> List[str]:
+    """
+    Tabla (tabula recta) de Vigenère: la fila k es el alfabeto desplazado k posiciones.
+    tabla[k][p] es la letra cifrada de la letra clara p con la letra clave k.
+    """
+    return [ALFABETO_ESP_26[k:] + ALFABETO_ESP_26[:k] for k in range(26)]
+
+
+def _desplazar_conservando_formato(texto: str, clave: str, signo: int) -> str:
+    """
+    Aplica Vigenère solo a las letras A-Z / a-z, respetando mayúsculas y minúsculas.
+    Espacios, signos, dígitos y letras acentuadas o 'ñ' se copian tal cual y no
+    consumen posición de la clave (así el descifrado es exactamente reversible).
+    """
+    k_limpia = normalizar_texto(clave, mantener_espacios=False)
+    if not k_limpia:
+        raise ValueError("La clave no puede estar vacía.")
+
+    indices_clave = [LETRA_A_INDICE[c] for c in k_limpia]
+    m = len(indices_clave)
+    resultado = []
+    pos_clave = 0
+    for ch in texto:
+        mayus = ch.upper()
+        if ch.isascii() and mayus in LETRA_A_INDICE:
+            valor = (LETRA_A_INDICE[mayus] + signo * indices_clave[pos_clave % m]) % 26
+            nueva = INDICE_A_LETRA[valor]
+            resultado.append(nueva if ch.isupper() else nueva.lower())
+            pos_clave += 1
+        else:
+            resultado.append(ch)
+    return "".join(resultado)
+
+
+def cifrar_vigenere(texto_plano: str, clave: str, conservar_formato: bool = False) -> str:
     """
     Cifra un texto plano usando el cifrado de Vigenère con alfabeto A-Z (Z_26).
     
@@ -64,10 +119,14 @@ def cifrar_vigenere(texto_plano: str, clave: str) -> str:
     Parámetros:
         texto_plano: Texto a cifrar (puede contener espacios o minúsculas).
         clave: Clave alfabética.
+        conservar_formato: si es True se respetan espacios, signos y mayúsculas/minúsculas.
         
     Retorna:
-        Texto cifrado (solo letras mayúsculas A-Z).
+        Texto cifrado (solo letras mayúsculas A-Z, salvo con conservar_formato).
     """
+    if conservar_formato:
+        return _desplazar_conservando_formato(texto_plano, clave, +1)
+
     p_limpio = normalizar_texto(texto_plano, mantener_espacios=False)
     k_limpia = normalizar_texto(clave, mantener_espacios=False)
     
@@ -89,7 +148,7 @@ def cifrar_vigenere(texto_plano: str, clave: str) -> str:
     return "".join(criptograma)
 
 
-def descifrar_vigenere(criptograma: str, clave: str) -> str:
+def descifrar_vigenere(criptograma: str, clave: str, conservar_formato: bool = False) -> str:
     """
     Descifra un criptograma usando el cifrado de Vigenère con alfabeto A-Z (Z_26).
     
@@ -99,10 +158,14 @@ def descifrar_vigenere(criptograma: str, clave: str) -> str:
     Parámetros:
         criptograma: Texto cifrado.
         clave: Clave alfabética estimada o confirmada.
+        conservar_formato: si es True se respetan espacios, signos y mayúsculas/minúsculas.
         
     Retorna:
-        Texto plano descifrado (mayúsculas A-Z).
+        Texto plano descifrado (mayúsculas A-Z, salvo con conservar_formato).
     """
+    if conservar_formato:
+        return _desplazar_conservando_formato(criptograma, clave, -1)
+
     c_limpio = normalizar_texto(criptograma, mantener_espacios=False)
     k_limpia = normalizar_texto(clave, mantener_espacios=False)
     

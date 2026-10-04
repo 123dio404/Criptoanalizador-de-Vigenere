@@ -231,6 +231,32 @@ QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
     height: 0px;
 }
 
+QScrollBar:horizontal {
+    border: none;
+    background: #0f172a;
+    height: 10px;
+    margin: 0px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #334155;
+    min-width: 20px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #475569;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+QScrollBar::add-page, QScrollBar::sub-page {
+    background: none;
+}
+
 /* GroupBox y Paneles */
 QGroupBox {
     border: 1px solid #334155;
@@ -247,6 +273,45 @@ QGroupBox::title {
     subcontrol-position: top left;
     left: 12px;
     padding: 0 4px;
+}
+
+/* Casilla de verificación */
+QCheckBox {
+    color: #cbd5e1;
+    spacing: 8px;
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #475569;
+    border-radius: 4px;
+    background-color: #0f172a;
+}
+
+QCheckBox::indicator:hover {
+    border-color: #38bdf8;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #38bdf8;
+    border-color: #38bdf8;
+}
+
+/* Tabla de Vigenère: celdas compactas */
+QTableWidget#tablaVigenere {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 11px;
+    gridline-color: #334155;
+}
+
+QTableWidget#tablaVigenere::item {
+    padding: 0px;
+}
+
+QTableWidget#tablaVigenere QHeaderView::section {
+    padding: 0px;
+    font-size: 11px;
 }
 
 /* ComboBox y SpinBox */
