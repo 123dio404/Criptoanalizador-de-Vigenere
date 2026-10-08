@@ -1,9 +1,3 @@
-"""
-views/styles.py
-Estilos visuales modernos para la interfaz gráfica PyQt5.
-Paleta de colores sobria, elegante y de alta legibilidad (tema Dark Slate / Cyber-Security).
-"""
-
 MAIN_STYLESHEET = """
 QMainWindow {
     background-color: #0f172a;
@@ -15,7 +9,6 @@ QWidget {
     font-size: 13px;
 }
 
-/* Encabezados y Labels */
 QLabel {
     color: #cbd5e1;
 }
@@ -40,7 +33,6 @@ QLabel#badgeLabel {
     color: #38bdf8;
 }
 
-/* Panel informativo desplegable (icono "i") */
 QToolButton#infoButton {
     background-color: #0f172a;
     color: #38bdf8;
@@ -80,9 +72,6 @@ QLabel#infoBody {
     padding: 10px 12px;
 }
 
-/* Pestañas (QTabWidget).
-   El fondo de la barra debe coincidir con la ventana: si no, Qt pinta una línea gris
-   en los huecos de las esquinas redondeadas. */
 QTabBar {
     background-color: #0f172a;
     border: none;
@@ -121,7 +110,6 @@ QTabBar::tab:hover:!selected {
     color: #e2e8f0;
 }
 
-/* Botones */
 QPushButton {
     background-color: #2563eb;
     color: #ffffff;
@@ -160,7 +148,6 @@ QPushButton#accentButton:hover {
     background-color: #047857;
 }
 
-/* Campos de Texto y Edición */
 QTextEdit, QPlainTextEdit, QLineEdit {
     background-color: #0f172a;
     color: #f8fafc;
@@ -177,7 +164,6 @@ QTextEdit:focus, QPlainTextEdit:focus, QLineEdit:focus {
     border: 1px solid #38bdf8;
 }
 
-/* Tablas (QTableWidget) */
 QTableWidget {
     background-color: #0f172a;
     border: 1px solid #334155;
@@ -188,7 +174,6 @@ QTableWidget {
     selection-color: #ffffff;
 }
 
-/* El tramo del encabezado sin columnas hereda blanco si no se pinta explícitamente */
 QHeaderView {
     background-color: #0f172a;
     border: none;
@@ -208,7 +193,6 @@ QTableCornerButton::section {
     border: 1px solid #334155;
 }
 
-/* ScrollBars */
 QScrollBar:vertical {
     border: none;
     background: #0f172a;
@@ -257,7 +241,6 @@ QScrollBar::add-page, QScrollBar::sub-page {
     background: none;
 }
 
-/* GroupBox y Paneles */
 QGroupBox {
     border: 1px solid #334155;
     border-radius: 8px;
@@ -275,7 +258,6 @@ QGroupBox::title {
     padding: 0 4px;
 }
 
-/* Casilla de verificación */
 QCheckBox {
     color: #cbd5e1;
     spacing: 8px;
@@ -298,7 +280,6 @@ QCheckBox::indicator:checked {
     border-color: #38bdf8;
 }
 
-/* Tabla de Vigenère: celdas compactas */
 QTableWidget#tablaVigenere {
     font-family: 'Consolas', 'Courier New', monospace;
     font-size: 11px;
@@ -314,7 +295,6 @@ QTableWidget#tablaVigenere QHeaderView::section {
     font-size: 11px;
 }
 
-/* ComboBox y SpinBox */
 QComboBox, QSpinBox {
     background-color: #0f172a;
     border: 1px solid #334155;
@@ -334,7 +314,6 @@ QComboBox QAbstractItemView {
     selection-background-color: #2563eb;
 }
 
-/* Diálogos y Cuadros de Mensaje / Alerta (QMessageBox / QDialog) */
 QDialog, QMessageBox {
     background-color: #1e293b;
     color: #f8fafc;
@@ -362,4 +341,3 @@ QMessageBox QPushButton:hover, QDialog QPushButton:hover {
     background-color: #1d4ed8;
 }
 """
-

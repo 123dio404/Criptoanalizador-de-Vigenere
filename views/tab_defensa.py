@@ -1,10 +1,3 @@
-"""
-views/tab_defensa.py
-Pestaña de Apoyo Teórico y Preparación para la Defensa Oral (Control Anti-IA).
-Asignatura: ELC107 Criptografía y Seguridad - UAGRM.
-Incluye glosario técnico, fórmulas matemáticas explicadas y respuestas a preguntas de examen.
-"""
-
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QTextBrowser, QGroupBox
 )
@@ -26,9 +19,9 @@ DEFENSA_ORAL_HTML = """
     <span class="tag">CRITERIO DE DEFENSA 15 PTS</span>
     <h3>1. ¿Por qué el Cifrado de Vigenère es vulnerable y cómo lo demuestra Kasiski?</h3>
     <p>
-        El cifrado de Vigenère es un <b>cifrado polialfabético periódico</b>. Al reutilizar una clave <i>K</i> de longitud fija <i>m</i>, 
-        la periodicidad destruye la seguridad perfecta. Si un mismo fragmento de texto en claro (por ejemplo, el trigrama "QUE" o "DEL") 
-        aparece en dos posiciones separadas por una distancia Δ que es múltiplo exacto de <i>m</i>, ambas instancias coincidirán con 
+        El cifrado de Vigenère es un <b>cifrado polialfabético periódico</b>. Al reutilizar una clave <i>K</i> de longitud fija <i>m</i>,
+        la periodicidad destruye la seguridad perfecta. Si un mismo fragmento de texto en claro (por ejemplo, el trigrama "QUE" o "DEL")
+        aparece en dos posiciones separadas por una distancia Δ que es múltiplo exacto de <i>m</i>, ambas instancias coincidirán con
         las mismas letras de la clave y generarán <b>criptogramas idénticos</b>.<br>
         Por tanto, al factorizar las distancias entre n-gramas repetidos, la longitud de la clave <i>m</i> divide a dichas distancias.
     </p>
@@ -56,8 +49,8 @@ DEFENSA_ORAL_HTML = """
     <span class="tag">PREGUNTA FRECUENTE DE EXAMEN</span>
     <h3>3. ¿Por qué en la gráfica o tabla de IC también se ven picos en múltiplos de la clave (ej. k=6 si m=3)?</h3>
     <p>
-        Si la clave tiene longitud 3 ("MAR"), agrupar cada 6 posiciones también conserva letras cifradas con el mismo desplazamiento César 
-        (la posición 0 y la 6 fueron cifradas con la letra 'M'). Por ello, <b>los múltiplos de la clave también presentarán un IC elevado</b>. 
+        Si la clave tiene longitud 3 ("MAR"), agrupar cada 6 posiciones también conserva letras cifradas con el mismo desplazamiento César
+        (la posición 0 y la 6 fueron cifradas con la letra 'M'). Por ello, <b>los múltiplos de la clave también presentarán un IC elevado</b>.
         Sin embargo, la verdadera longitud fundamental es el <b>mínimo común periodo</b> (k = 3), respaldado por la mayor concentración de votos en el Test de Kasiski.
     </p>
 </div>

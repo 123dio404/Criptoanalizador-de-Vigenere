@@ -1,9 +1,3 @@
-"""
-controllers/formateo.py
-Convierte los resultados del modelo en filas/textos listos para que las vistas los dibujen.
-Son funciones puras (sin PyQt) para poder probarlas sin interfaz gráfica.
-"""
-
 from typing import Any, Dict, List, Sequence, Tuple
 
 from models.spanish_freq import IC_TEORICO_ALEATORIO, IC_TEORICO_ESP
@@ -13,7 +7,6 @@ LARGO_BARRA_KASISKI = 10
 LARGO_BARRA_FRIEDMAN = 20
 
 
-# --------------------------------------------------------------------------- Kasiski
 def resumen_kasiski(kasiski: Dict[str, Any]) -> Tuple[str, str, str]:
     candidatos = kasiski.get('top_key_lengths', [])
     if candidatos:
@@ -80,7 +73,6 @@ def filas_factores(kasiski: Dict[str, Any]) -> List[Dict[str, Any]]:
     return filas
 
 
-# --------------------------------------------------------------------------- Friedman
 def textos_referencia_friedman() -> Tuple[str, str]:
     return (
         f"IC Teórico Español: {IC_TEORICO_ESP:.4f}",
@@ -136,7 +128,6 @@ def filas_periodos(friedman: Dict[str, Any]) -> List[Dict[str, Any]]:
     return filas
 
 
-# --------------------------------------------------------------------------- Frecuencias χ²
 def texto_clave_columna(letra: str, indice: int) -> str:
     return f"Columna #{indice + 1} (Posición {indice}) -> Letra sugerida: '{letra}'"
 
@@ -165,7 +156,6 @@ def filas_candidatas(columna: Dict[str, Any]) -> List[Dict[str, Any]]:
     return filas
 
 
-# --------------------------------------------------------------------------- Traza
 def construir_traza(criptograma: str, texto_plano: str, clave: str, eventos: Sequence[str]) -> str:
     lineas = [
         "==================================================================",

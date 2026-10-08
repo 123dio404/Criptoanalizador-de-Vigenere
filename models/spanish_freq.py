@@ -1,13 +1,3 @@
-"""
-models/spanish_freq.py
-Frecuencias estadísticas de letras en el idioma español (monogramas)
-basadas en análisis de corpus de la Real Academia Española (RAE) y literatura clásica.
-Índice de Coincidencia teórico esperado en español: ~0.074.
-Texto aleatorio (equiprobable): 1 / 26 ≈ 0.03846.
-"""
-
-# Frecuencias porcentuales típicas del español (suman ~100%)
-# Fuente: RAE / Frecuencias estándar para criptoanálisis
 FRECUENCIAS_PORCENTUALES_ESP = {
     'A': 12.53,
     'B': 1.42,
@@ -37,16 +27,13 @@ FRECUENCIAS_PORCENTUALES_ESP = {
     'Z': 0.52
 }
 
-# Alfabeto estándar de 26 letras (A-Z)
 ALFABETO_ESP_26 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-# Frecuencias relativas normalizadas (0.0 a 1.0)
 PROBABILIDADES_ESP = {
     letra: FRECUENCIAS_PORCENTUALES_ESP[letra] / 100.0
     for letra in ALFABETO_ESP_26
 }
 
-# Índice de coincidencia teórico esperado para español, inglés y aleatorio
 IC_TEORICO_ESP = 0.0740
 IC_TEORICO_INGLES = 0.0667
-IC_TEORICO_ALEATORIO = 1.0 / 26.0  # ~0.03846
+IC_TEORICO_ALEATORIO = 1.0 / 26.0

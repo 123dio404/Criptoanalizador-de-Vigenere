@@ -1,9 +1,3 @@
-"""
-views/tab_friedman.py
-Vista de la pestaña 3: Índice de Coincidencia (Test de Friedman).
-Vista pasiva: recibe valores ya formateados por el controlador y los dibuja.
-"""
-
 from typing import Dict, Sequence
 
 from PyQt5.QtWidgets import QGroupBox, QHBoxLayout, QLabel, QVBoxLayout, QWidget
@@ -30,7 +24,6 @@ class TabFriedman(QWidget):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
 
-        # Panel de Métricas de Referencia
         ref_box = QGroupBox("Métricas Teóricas de Referencia vs Observadas")
         box_layout = QVBoxLayout(ref_box)
         ref_layout = QHBoxLayout()
@@ -45,11 +38,9 @@ class TabFriedman(QWidget):
             ref_layout.addWidget(lbl)
         ref_layout.addStretch()
 
-        # Fundamento teórico: oculto, se despliega con el icono "i"
         box_layout.addWidget(PanelInformativo("Fundamento Teórico: Índice de Coincidencia", TEXTO_FUNDAMENTO))
         layout.addWidget(ref_box)
 
-        # Tabla de Evaluación de Periodos Candidatos
         self.table_box = QGroupBox("Evaluación del Índice de Coincidencia por Periodo Candidato")
         t_layout = QVBoxLayout(self.table_box)
 
@@ -63,7 +54,6 @@ class TabFriedman(QWidget):
         t_layout.addWidget(self.table_periods)
         layout.addWidget(self.table_box, 1)
 
-    # --- API pública para el controlador ---
     def mostrar_referencias(self, ic_espanol: str, ic_aleatorio: str) -> None:
         self.lbl_esp.setText(ic_espanol)
         self.lbl_rand.setText(ic_aleatorio)
@@ -73,7 +63,6 @@ class TabFriedman(QWidget):
         self.lbl_friedman_est.setText(estimacion_friedman)
 
     def mostrar_periodos(self, titulo: str, filas: Sequence[Dict]) -> None:
-        """Cada fila: dict con claves indice, periodo, ic, delta, barra, diagnostico, pico (bool)."""
         self.table_box.setTitle(titulo)
         tabla = self.table_periods
         tabla.setRowCount(len(filas))

@@ -1,8 +1,3 @@
-"""
-models/caso_prueba.py
-Caso de prueba oficial (Grupo C) usado para cargas rápidas y validaciones.
-"""
-
 TEXTO_CASO_PRUEBA = (
     "SOLA O SER PROFUNDO EN EL SILENCIO DE LA NOCHE CUANDO LA LUNA ILUMINA EL CAMINO. "
     "SOLA O SER PROFUNDO EN EL MAR AZUL Y TRANSPARENTE DONDE LOS PECES NADAN EN PAZ. "

@@ -1,10 +1,3 @@
-"""
-views/main_window.py
-Vista principal: contenedor de pestañas, encabezado y barra de estado.
-No conoce el modelo; el AppController es quien la conecta con él.
-Asignatura: ELC107 Criptografía y Seguridad - UAGRM.
-"""
-
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QHBoxLayout, QLabel, QMainWindow, QMessageBox, QStatusBar,
@@ -39,7 +32,6 @@ class MainWindow(QMainWindow):
         main_layout.setContentsMargins(16, 16, 16, 16)
         main_layout.setSpacing(12)
 
-        # Encabezado superior
         header_layout = QHBoxLayout()
         title_lbl = QLabel("CRIPTOANALIZADOR DE VIGENÈRE")
         title_lbl.setObjectName("titleLabel")
@@ -54,7 +46,6 @@ class MainWindow(QMainWindow):
         header_layout.addWidget(self.badge_key)
         main_layout.addLayout(header_layout)
 
-        # Pestañas
         self.tabs = QTabWidget()
         barra = BarraPestanas()
         barra.setElideMode(Qt.ElideNone)
@@ -75,20 +66,16 @@ class MainWindow(QMainWindow):
         self.tabs.addTab(self.tab_descifrado, "5. Descifrado y Trazabilidad")
         main_layout.addWidget(self.tabs)
 
-        # El ancho mínimo es el de los títulos: si la barra queda más corta, la última
-        # pestaña se corta y el borde recortado se ve como una línea.
         ancho_pestanas = self.tabs.tabBar().sizeHint().width()
         self.tabs.setMinimumWidth(ancho_pestanas)
         self.resize(max(1280, ancho_pestanas + 40), 800)
 
-        # Barra de estado
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         self.mostrar_estado(
             "Listo para iniciar. Puede ingresar un criptograma o cargar el caso de prueba en la pestaña 1."
         )
 
-    # --- API pública para el controlador ---
     def mostrar_estado(self, mensaje: str) -> None:
         self.status_bar.showMessage(mensaje)
 

@@ -103,9 +103,6 @@ criptoanalizador/
 │   ├── test_caso_docente.py             # Validación del caso oficial de extremo a extremo
 │   └── test_formateo_y_regresiones.py   # Pruebas de formateo y regresiones corregidas
 │
-├── docs/
-│   ├── plantilla_informe.md             # Borrador del informe académico en PDF
-│   └── guia_defensa_oral.md             # Preguntas frecuentes y justificación matemática
 │
 ├── main.py                              # Punto de entrada de la aplicación
 └── README.md                            # Documentación técnica del proyecto

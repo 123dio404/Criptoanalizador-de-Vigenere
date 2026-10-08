@@ -1,10 +1,3 @@
-"""
-views/tab_descifrado.py
-Vista de la pestaña 5: Descifrado, Trazabilidad y Exportación de Evidencia para el Informe.
-Cumple con el requisito: "Evidencia de ejecución (capturas, trazas, resultados)".
-Vista pasiva: la escritura a disco la realiza el controlador.
-"""
-
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication, QFileDialog, QGroupBox, QHBoxLayout, QLabel, QPushButton,
@@ -13,9 +6,7 @@ from PyQt5.QtWidgets import (
 
 
 class TabDescifrado(QWidget):
-    # (ruta_elegida, contenido_de_la_traza)
     exportar_traza_solicitado = pyqtSignal(str, str)
-    # Mensajes informativos para la ventana principal: (titulo, mensaje)
     aviso = pyqtSignal(str, str)
 
     def __init__(self, parent=None):
@@ -26,7 +17,6 @@ class TabDescifrado(QWidget):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
 
-        # Barra superior con clave y estado
         top_box = QGroupBox("Estado del Descifrado")
         top_layout = QHBoxLayout(top_box)
 
@@ -39,10 +29,8 @@ class TabDescifrado(QWidget):
         top_layout.addStretch()
         layout.addWidget(top_box)
 
-        # Splitter con Textos y Traza de Depuración
         splitter = QSplitter(Qt.Vertical)
 
-        # Panel de Textos
         text_panel = QWidget()
         text_layout = QHBoxLayout(text_panel)
         text_layout.setContentsMargins(0, 0, 0, 0)
@@ -63,7 +51,6 @@ class TabDescifrado(QWidget):
 
         splitter.addWidget(text_panel)
 
-        # Panel de Traza de Depuración
         trace_box = QGroupBox("Traza de Depuración y Evidencia Criptoanalítica Paso a Paso")
         trace_layout = QVBoxLayout(trace_box)
 
@@ -88,7 +75,6 @@ class TabDescifrado(QWidget):
         splitter.addWidget(trace_box)
         layout.addWidget(splitter, 1)
 
-    # --- API pública para el controlador ---
     def mostrar_resultados(self, criptograma: str, texto_plano: str, clave: str, traza: str) -> None:
         self.txt_ciphertext.setPlainText(criptograma)
         self.txt_plaintext.setPlainText(texto_plano)
@@ -97,7 +83,6 @@ class TabDescifrado(QWidget):
         self.lbl_caracteres.setText(f"Total Caracteres: {len(criptograma)}")
         self.txt_trace.setPlainText(traza)
 
-    # --- Acciones puramente de interfaz ---
     def _copiar_traza(self) -> None:
         contenido = self.txt_trace.toPlainText()
         if not contenido:

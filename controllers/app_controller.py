@@ -1,9 +1,3 @@
-"""
-controllers/app_controller.py
-Controlador principal (MVC). Escucha las señales de las vistas, invoca al modelo
-(CriptoanalizadorVigenere y funciones de cifrado) y devuelve los resultados formateados a las vistas.
-"""
-
 from typing import Any, Dict, Optional
 
 from controllers import formateo
@@ -48,7 +42,6 @@ class AppController:
         desc.exportar_traza_solicitado.connect(self.exportar_traza)
         desc.aviso.connect(self.vista.mostrar_info)
 
-    # pestaña 1
     def cargar_caso_prueba(self) -> None:
         cif = self.vista.tab_cifrador
         cif.set_texto_plano(TEXTO_CASO_PRUEBA)
@@ -86,7 +79,6 @@ class AppController:
         self._mostrar_clave_usada(clave, texto_plano, conservar_formato)
 
     def _mostrar_clave_usada(self, clave: str, texto_claro: str, conservar_formato: bool) -> None:
-        """Actualiza las etiquetas superiores y pinta los cruces usados en la tabla de Vigenère."""
         clave_usada = normalizar_texto(clave)
         self.vista.actualizar_badges(len(clave_usada), clave_usada)
         frecuencias = contar_intersecciones(texto_claro, clave, conservar_formato)
@@ -97,7 +89,6 @@ class AppController:
     def actualizar_contador(self, criptograma: str) -> None:
         self.vista.tab_cifrador.set_contador(len(normalizar_texto(criptograma)))
 
-    # análisis completo
     def analizar(self, criptograma: str) -> None:
         limpio = normalizar_texto(criptograma)
         if len(limpio) < MIN_LETRAS_ANALISIS:
@@ -112,7 +103,7 @@ class AppController:
             self.vista.mostrar_estado("Ejecutando criptoanálisis estadístico...")
             self.modelo.cargar_criptograma(limpio)
             resultados = self.modelo.ejecutar_analisis_completo()
-        except Exception as e:  # el análisis no debe tumbar la interfaz
+        except Exception as e:
             self.vista.mostrar_error("Error durante Criptoanálisis", f"Ocurrió un error: {e}")
             self.vista.mostrar_estado("Error durante el análisis.")
             return
@@ -136,7 +127,6 @@ class AppController:
             "Explore las pestañas 2 a 5 para visualizar cada fase paso a paso."
         )
 
-    # pestañas 2 y 3
     def _mostrar_kasiski(self, kasiski: Dict[str, Any]) -> None:
         tab = self.vista.tab_kasiski
         tab.mostrar_resumen(*formateo.resumen_kasiski(kasiski))
@@ -148,7 +138,6 @@ class AppController:
         tab.mostrar_metricas(*formateo.metricas_friedman(friedman))
         tab.mostrar_periodos(formateo.titulo_tabla_periodos(friedman), formateo.filas_periodos(friedman))
 
-    # pestaña 4
     def _iniciar_frecuencias(self, longitud_sugerida: int) -> None:
         maximo = min(MAX_LONGITUD_CLAVE_UI, len(self.modelo.clean_ciphertext))
         longitud = min(longitud_sugerida, maximo)
@@ -156,7 +145,6 @@ class AppController:
         self.explorar_longitud(longitud)
 
     def explorar_longitud(self, longitud: int) -> None:
-        """Recalcula la clave χ² para la longitud elegida en la pestaña 4 (sin alterar la traza)."""
         if not self.modelo.clean_ciphertext:
             return
         self._exploracion = self.modelo.explorar_longitud_clave(longitud)
@@ -178,7 +166,6 @@ class AppController:
         )
 
     def confirmar_clave(self) -> None:
-        """Descifra con la clave mostrada en la pestaña 4 (posiblemente distinta a la automática)."""
         if not self._exploracion:
             return
         clave = self._exploracion['recovered_key']
@@ -192,7 +179,6 @@ class AppController:
         self.vista.ir_a_pestana(PESTANA_DESCIFRADO)
         self.vista.mostrar_estado(f"Mensaje descifrado con clave '{clave}'.")
 
-    # pestaña 5
     def _mostrar_descifrado(self, clave: str) -> None:
         traza = formateo.construir_traza(
             self.modelo.clean_ciphertext, self.modelo.decrypted_text, clave, self.modelo.execution_log

@@ -1,9 +1,3 @@
-"""
-views/tab_kasiski.py
-Vista de la pestaña 2: Test de Kasiski.
-Vista pasiva: recibe filas ya formateadas por el controlador y las dibuja.
-"""
-
 from typing import Dict, List, Sequence
 
 from PyQt5.QtCore import Qt
@@ -30,7 +24,6 @@ class TabKasiski(QWidget):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
 
-        # Tarjeta de Resumen y Métricas
         metrics_box = QGroupBox("Resumen del Examen de Kasiski")
         box_layout = QVBoxLayout(metrics_box)
         metrics_layout = QHBoxLayout()
@@ -44,15 +37,12 @@ class TabKasiski(QWidget):
             metrics_layout.addWidget(lbl)
         metrics_layout.addStretch()
 
-        # Fundamento teórico: oculto, se despliega con el icono "i"
         box_layout.addWidget(PanelInformativo("Fundamento Criptográfico", TEXTO_FUNDAMENTO))
         layout.addWidget(metrics_box)
 
-        # Tablas una al lado de la otra
         splitter = QSplitter(Qt.Horizontal)
         splitter.setChildrenCollapsible(False)
 
-        # Tabla 1: N-gramas y secuencias repetidas
         table1_box = QGroupBox("1. Registro Detallado de Secuencias Repetidas (N-Gramas)")
         t1_layout = QVBoxLayout(table1_box)
         self.table_ngrams = crear_tabla(
@@ -65,7 +55,6 @@ class TabKasiski(QWidget):
         t1_layout.addWidget(self.table_ngrams)
         splitter.addWidget(table1_box)
 
-        # Tabla 2: Ranking de factores y divisores
         table2_box = QGroupBox("2. Histograma de Frecuencia de Factores / Divisores Comunes")
         t2_layout = QVBoxLayout(table2_box)
         self.table_factors = crear_tabla(
@@ -82,14 +71,12 @@ class TabKasiski(QWidget):
         splitter.setSizes([500, 400])
         layout.addWidget(splitter, 1)
 
-    # --- API pública para el controlador ---
     def mostrar_resumen(self, n_ngramas: str, n_distancias: str, divisor_dominante: str) -> None:
         self.lbl_ngram_count.setText(n_ngramas)
         self.lbl_dist_count.setText(n_distancias)
         self.lbl_top_factors.setText(divisor_dominante)
 
     def mostrar_ngramas(self, filas: Sequence[Dict[str, str]]) -> None:
-        """Cada fila: dict con claves indice, ngrama, longitud, apariciones, posiciones, distancias, factores."""
         tabla = self.table_ngrams
         tabla.setRowCount(len(filas))
         for r, f in enumerate(filas):
@@ -102,7 +89,6 @@ class TabKasiski(QWidget):
             tabla.setItem(r, 6, celda(f['factores'], tooltip=f['factores_tooltip']))
 
     def mostrar_factores(self, filas: Sequence[Dict]) -> None:
-        """Cada fila: dict con claves indice, candidata, votos, barra, evaluacion, principal (bool)."""
         tabla = self.table_factors
         tabla.setRowCount(len(filas))
         for r, f in enumerate(filas):

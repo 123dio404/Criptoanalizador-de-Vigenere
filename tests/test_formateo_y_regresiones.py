@@ -1,8 +1,3 @@
-"""
-tests/test_formateo_y_regresiones.py
-Pruebas de la capa Controlador (formateo, sin PyQt) y regresiones de los bugs corregidos.
-"""
-
 import unittest
 
 from controllers import formateo
@@ -14,7 +9,6 @@ from models.vigenere import cifrar_vigenere, contar_intersecciones, descifrar_vi
 
 
 class TestCifradoConFormato(unittest.TestCase):
-
     def test_conserva_espacios_signos_y_mayusculas(self):
         cifrado = cifrar_vigenere("Hola, Mundo!", "MAR", conservar_formato=True)
         self.assertEqual(cifrado, "Tocm, Mlzdf!")
@@ -28,7 +22,6 @@ class TestCifradoConFormato(unittest.TestCase):
         self.assertEqual(cifrar_vigenere("Hola, Mundo!", "MAR"), "TOCMMLZDF")
 
     def test_intersecciones_cuentan_repeticiones(self):
-        """AAA con clave M usa tres veces el cruce (M, A); HOLA reparte un cruce por letra."""
         self.assertEqual(contar_intersecciones("AAA", "M"), {("M", "A"): 3})
         self.assertEqual(
             contar_intersecciones("HOLA", "MAR"),
@@ -45,24 +38,21 @@ class TestCifradoConFormato(unittest.TestCase):
         tabla = generar_tabla_vigenere()
         self.assertEqual(len(tabla), 26)
         self.assertEqual(tabla[0], "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        self.assertEqual(tabla[12][7], "T")  # H + M = T
+        self.assertEqual(tabla[12][7], "T")
 
 
 class TestRegresiones(unittest.TestCase):
-
     def setUp(self):
         self.cripto = cifrar_vigenere(TEXTO_CASO_PRUEBA, CLAVE_CASO_PRUEBA)
 
     def test_factores_comunes_son_la_interseccion_de_las_distancias(self):
-        """Antes se mostraba la UNIÓN de divisores: [27, 105, 57] daba [3, 5, 7, 9, 15, 19, ...]."""
         kasiski = ejecutar_examen_kasiski(self.cripto)
         item = next(i for i in kasiski['repeated_ngrams'] if i['ngram'] == "NUA")
         self.assertEqual(item['distances'], [27, 105, 57])
         self.assertEqual(item['common_factors'], [3])
-        self.assertIn(5, item['factors'])  # la unión se conserva como dato aparte
+        self.assertIn(5, item['factors'])
 
     def test_friedman_prefiere_el_periodo_fundamental_y_no_un_multiplo(self):
-        """Con la clave MAR el IC en k=12 (0.0749) supera al de k=3, pero el periodo correcto es 3."""
         friedman = analizar_periodos_friedman(self.cripto, max_periodo=15)
         ics = {p['period']: p['average_ic'] for p in friedman['periods_data']}
         self.assertGreater(ics[12], ics[3])
@@ -84,7 +74,6 @@ class TestRegresiones(unittest.TestCase):
 
 
 class TestFormateo(unittest.TestCase):
-
     def setUp(self):
         analizador = CriptoanalizadorVigenere(cifrar_vigenere(TEXTO_CASO_PRUEBA, CLAVE_CASO_PRUEBA))
         self.res = analizador.ejecutar_analisis_completo()

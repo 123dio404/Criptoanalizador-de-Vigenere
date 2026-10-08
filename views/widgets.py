@@ -1,8 +1,3 @@
-"""
-views/widgets.py
-Widgets reutilizables de la capa Vista.
-"""
-
 from typing import Optional, Sequence
 
 from PyQt5.QtCore import Qt
@@ -14,25 +9,15 @@ from PyQt5.QtWidgets import (
 
 
 class BarraPestanas(QTabBar):
-    """
-    La barra estándar calcula el ancho de cada pestaña justo y, con el borde de la
-    hoja de estilos, recorta el último carácter (el ')' de 'Frecuencias (χ²)').
-    """
-
     def tabSizeHint(self, index: int):
         hint = super().tabSizeHint(index)
-        # El glifo χ² se mide más angosto de lo que se pinta y el borde se come el ')'.
+        # qt mide mal el ancho de χ² y recorta el titulo
         if "χ" in self.tabText(index):
             hint.setWidth(hint.width() + 20)
         return hint
 
 
 class PanelInformativo(QWidget):
-    """
-    Panel de ayuda teórica oculto por defecto. Muestra un título junto a un icono "i";
-    al pulsar el icono se despliega (o se oculta) el texto explicativo.
-    """
-
     def __init__(self, titulo: str, texto: str, parent: Optional[QWidget] = None):
         super().__init__(parent)
         layout = QVBoxLayout(self)
@@ -71,12 +56,6 @@ class PanelInformativo(QWidget):
 
 def crear_tabla(encabezados: Sequence[str], columnas_ajustadas: Sequence[int] = (),
                 columna_elastica: Optional[int] = None) -> QTableWidget:
-    """
-    Crea una tabla de solo lectura con el estilo de la aplicación.
-    - columnas_ajustadas: columnas que se dimensionan según su contenido.
-    - columna_elastica: columna que absorbe el espacio sobrante (por defecto la última).
-    Las columnas restantes son redimensionables manualmente y la tabla desplaza horizontalmente si no caben.
-    """
     tabla = QTableWidget()
     tabla.setColumnCount(len(encabezados))
     tabla.setHorizontalHeaderLabels(list(encabezados))
@@ -93,8 +72,6 @@ def crear_tabla(encabezados: Sequence[str], columnas_ajustadas: Sequence[int] = 
     metricas = cabecera.fontMetrics()
     for col, titulo in enumerate(encabezados):
         if col == elastica and col not in columnas_ajustadas:
-            # Absorbe el ancho sobrante: si no, Qt deja un hueco vacío a la derecha
-            # que se pinta con el color por defecto (blanco).
             cabecera.setSectionResizeMode(col, QHeaderView.Stretch)
         elif col in columnas_ajustadas:
             cabecera.setSectionResizeMode(col, QHeaderView.ResizeToContents)
@@ -106,7 +83,6 @@ def crear_tabla(encabezados: Sequence[str], columnas_ajustadas: Sequence[int] = 
 
 def celda(texto: str, centrado: bool = False, color: Optional[str] = None,
           tooltip: Optional[str] = None) -> QTableWidgetItem:
-    """Crea una celda de tabla con alineación, color y tooltip opcionales."""
     item = QTableWidgetItem(texto)
     if centrado:
         item.setTextAlignment(Qt.AlignCenter)

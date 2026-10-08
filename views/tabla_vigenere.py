@@ -1,9 +1,3 @@
-"""
-views/tabla_vigenere.py
-Panel lateral plegable con la tabla (tabula recta) de Vigenère.
-Las filas correspondientes a las letras de la clave se resaltan con otro color.
-"""
-
 from typing import Dict, Sequence, Tuple
 
 from PyQt5.QtCore import QPropertyAnimation, QEasingCurve, QSize, Qt
@@ -16,7 +10,6 @@ from PyQt5.QtWidgets import (
 TAM_CELDA_MIN = 12
 ANCHO_RESPALDO = 640
 
-# Tono base de los cruces usados; se oscurece hacia COLOR_FRECUENCIA_OSCURO según la frecuencia.
 COLOR_FRECUENCIA = (0xF1, 0x8B, 0x6F)
 COLOR_FRECUENCIA_OSCURO = (0x7A, 0x34, 0x18)
 COLOR_TEXTO_CLARO = QColor("#1e293b")
@@ -24,7 +17,6 @@ COLOR_TEXTO_OSCURO = QColor("#fff7f4")
 
 
 def _color_frecuencia(tono: float) -> QColor:
-    """tono 0 es #F18B6F; tono 1 es el mismo color mucho más oscuro."""
     tono = max(0.0, min(1.0, tono))
     canales = (
         int(base + (oscuro - base) * tono)
@@ -34,8 +26,6 @@ def _color_frecuencia(tono: float) -> QColor:
 
 
 class BotonLateral(QAbstractButton):
-    """Botón angosto con texto vertical para plegar/desplegar el panel."""
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setCheckable(True)
@@ -76,8 +66,6 @@ class BotonLateral(QAbstractButton):
 
 
 class PanelTablaVigenere(QWidget):
-    """Panel que se pliega hacia la derecha dejando visible solo el botón lateral."""
-
     def __init__(self, parent=None):
         super().__init__(parent)
         layout = QHBoxLayout(self)
@@ -100,7 +88,6 @@ class PanelTablaVigenere(QWidget):
         self.tabla.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.tabla.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.tabla.setWordWrap(False)
-        # Las 26x26 celdas se reparten el espacio disponible: la tabla entra completa, sin scroll.
         for cabecera in (self.tabla.horizontalHeader(), self.tabla.verticalHeader()):
             cabecera.setMinimumSectionSize(TAM_CELDA_MIN)
             cabecera.setSectionResizeMode(QHeaderView.Stretch)
@@ -111,8 +98,6 @@ class PanelTablaVigenere(QWidget):
         self.contenido.setVisible(False)
         layout.addWidget(self.contenido, 1)
 
-        # El ancho lo fija el propio panel: plegado cabe solo el botón y el Generador
-        # ocupa el resto; desplegado toma la mitad de la pestaña.
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
         self.setFixedWidth(self.btn_alternar.width())
 
@@ -122,10 +107,8 @@ class PanelTablaVigenere(QWidget):
         self._animacion.valueChanged.connect(self._igualar_ancho)
         self._animacion.finished.connect(self._fin_animacion)
 
-    # --- API pública ---
     def mostrar_tabla(self, filas: Sequence[str], letras_clave: str,
                       frecuencias: Dict[Tuple[str, str], int]) -> None:
-        """Rellena la tabla y pinta solo los cruces (fila clave, columna clara) que se usaron."""
         alfabeto = filas[0] if filas else ""
         self.tabla.setHorizontalHeaderLabels(list(alfabeto))
         self.tabla.setVerticalHeaderLabels([fila[0] for fila in filas])
@@ -162,9 +145,7 @@ class PanelTablaVigenere(QWidget):
     def esta_desplegado(self) -> bool:
         return self.btn_alternar.isChecked()
 
-    # --- Animación ---
     def _ancho_desplegado(self) -> int:
-        """La mitad de la pestaña, para que la tabla quepa completa al abrirse."""
         contenedor = self.parentWidget()
         total = contenedor.width() if contenedor else ANCHO_RESPALDO * 2
         return max(ANCHO_RESPALDO // 2, total // 2)
@@ -173,7 +154,6 @@ class PanelTablaVigenere(QWidget):
         return self.btn_alternar.width()
 
     def ajustar_si_desplegado(self) -> None:
-        """Mantiene la mitad de la pestaña si la ventana cambia de tamaño con la tabla abierta."""
         if self.esta_desplegado() and self._animacion.state() != QPropertyAnimation.Running:
             ancho = self._ancho_desplegado()
             if self.width() != ancho:

@@ -1,9 +1,3 @@
-"""
-views/tab_frecuencias.py
-Vista de la pestaña 4: Análisis de Frecuencias y recuperación de la clave por Chi-cuadrado (χ²).
-Vista pasiva: no calcula nada; emite señales y dibuja lo que le entrega el controlador.
-"""
-
 from typing import Dict, Sequence
 
 from PyQt5.QtCore import pyqtSignal
@@ -17,7 +11,6 @@ COLOR_OPTIMO = "#22d3ee"
 
 
 class TabFrecuencias(QWidget):
-    # Señales hacia el controlador
     longitud_cambiada = pyqtSignal(int)
     columna_seleccionada = pyqtSignal(int)
     confirmar_clave_solicitado = pyqtSignal()
@@ -30,7 +23,6 @@ class TabFrecuencias(QWidget):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
 
-        # Panel Superior de Control de Longitud de Clave
         top_box = QGroupBox("Parámetros de Reconstrucción de Clave")
         top_layout = QHBoxLayout(top_box)
 
@@ -50,7 +42,6 @@ class TabFrecuencias(QWidget):
         top_layout.addStretch()
         layout.addWidget(top_box)
 
-        # Banner de Clave Recuperada
         key_box = QGroupBox("Palabra Clave Resuelta mediante Chi-Cuadrado (χ²)")
         key_layout = QHBoxLayout(key_box)
 
@@ -68,7 +59,6 @@ class TabFrecuencias(QWidget):
         key_layout.addWidget(self.btn_usar_clave)
         layout.addWidget(key_box)
 
-        # Selector de Columna
         col_box = QGroupBox("Inspección Detallada por Columna (Subcifrado César)")
         col_layout = QVBoxLayout(col_box)
 
@@ -86,7 +76,6 @@ class TabFrecuencias(QWidget):
         selector_layout.addStretch()
         col_layout.addLayout(selector_layout)
 
-        # Tabla de los 26 desplazamientos evaluados para la columna seleccionada
         self.table_candidates = crear_tabla(
             ["Letra Candidata", "Desplazamiento (s)", "Chi-Cuadrado (χ²)",
              "Correlación con Español", "Ranking"],
@@ -96,9 +85,7 @@ class TabFrecuencias(QWidget):
         col_layout.addWidget(self.table_candidates)
         layout.addWidget(col_box, 1)
 
-    # --- API pública para el controlador ---
     def configurar_longitud(self, maximo: int, valor: int) -> None:
-        """Ajusta el rango del selector y el valor sin disparar la señal de cambio."""
         self.spin_key_len.blockSignals(True)
         self.spin_key_len.setRange(1, max(1, maximo))
         self.spin_key_len.setValue(valor)
@@ -111,14 +98,12 @@ class TabFrecuencias(QWidget):
         self.lbl_recovered_key.setText(f"CLAVE:  [ {'  '.join(clave)} ]")
 
     def mostrar_columnas(self, etiquetas: Sequence[str]) -> None:
-        """Rellena el selector de columnas y selecciona la primera sin emitir señal."""
         self.combo_columns.blockSignals(True)
         self.combo_columns.clear()
         self.combo_columns.addItems(list(etiquetas))
         self.combo_columns.blockSignals(False)
 
     def mostrar_detalle_columna(self, info: str, filas: Sequence[Dict[str, str]]) -> None:
-        """Cada fila: dict con claves letra, desplazamiento, chi2, correlacion, ranking, optimo (bool)."""
         self.lbl_col_info.setText(info)
         tabla = self.table_candidates
         tabla.setRowCount(len(filas))
